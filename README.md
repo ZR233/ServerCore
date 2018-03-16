@@ -1,0 +1,2 @@
+# ServerCore
+basic server
