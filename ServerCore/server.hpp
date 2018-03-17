@@ -17,7 +17,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include "connection.hpp"
-#include "request_handler.hpp"
+
 
 namespace servercore {
 
@@ -34,6 +34,9 @@ public:
 
   /// Run the server's io_context loop.
   void run();
+  void setMaxLink(size_t max);
+  void setRestrictByAttribute(std::string key, std::string value, size_t num);
+  void kickByAttribute(std::string key, std::string value);
 
 private:
   /// Initiate an asynchronous accept operation.
@@ -60,10 +63,9 @@ private:
   /// The next connection to be accepted.
   connection_ptr new_connection_;
 
-  /// The handler for all incoming requests.
-  request_handler request_handler_;
-
   IHandler& handler_;
+
+  connection_service connection_service_;
 };
 
 } // namespace servercore

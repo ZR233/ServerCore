@@ -148,28 +148,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="connection.hpp" />
-    <ClInclude Include="header.hpp" />
     <ClInclude Include="IHandleQueue.hpp" />
     <ClInclude Include="IClient.hpp" />
     <ClInclude Include="ClientRoom.hpp" />
     <ClInclude Include="IClientBase.hpp" />
     <ClInclude Include="IHandler.hpp" />
     <ClInclude Include="Includes.hpp" />
-    <ClInclude Include="mime_types.hpp" />
-    <ClInclude Include="reply.hpp" />
-    <ClInclude Include="request.hpp" />
-    <ClInclude Include="request_handler.hpp" />
-    <ClInclude Include="request_parser.hpp" />
     <ClInclude Include="server.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="connection.cpp" />
-    <ClCompile Include="mime_types.cpp" />
-    <ClCompile Include="reply.cpp" />
-    <ClCompile Include="request_handler.cpp" />
-    <ClCompile Include="request_parser.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
