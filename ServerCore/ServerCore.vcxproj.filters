@@ -21,7 +21,46 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Server.h">
+    <ClInclude Include="IClientBase.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IClient.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientRoom.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IHandleQueue.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="connection.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="header.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mime_types.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="reply.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="request.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="request_handler.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="request_parser.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="server.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IHandler.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -30,6 +69,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Server.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="connection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mime_types.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="reply.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="request_handler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="request_parser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
