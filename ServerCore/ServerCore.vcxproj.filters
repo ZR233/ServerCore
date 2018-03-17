@@ -30,9 +30,6 @@
     <ClInclude Include="ClientRoom.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="IHandleQueue.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Includes.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -42,7 +39,10 @@
     <ClInclude Include="server.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="IHandler.hpp">
+    <ClInclude Include="IHandlers.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="io_context_pool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +50,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
+    <ClCompile Include="connection.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="connection.cpp">
+    <ClCompile Include="io_context_pool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

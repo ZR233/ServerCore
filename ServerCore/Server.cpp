@@ -13,17 +13,17 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
-#include "IHandler.hpp"
 
 
 namespace servercore {
 
 	server::server(const std::string& address, const std::string& port,
 		const std::string& doc_root, std::size_t thread_pool_size,
-		IHandler& handler)
-		: thread_pool_size_(thread_pool_size),
-		signals_(io_context_),
-		acceptor_(io_context_),
+		connection_handler& handler): 
+		thread_pool_size_(thread_pool_size),
+		io_context_pool_(thread_pool_size),
+		signals_(io_context_pool_.get_io_context()),
+		acceptor_(io_context_pool_.get_io_context()),
 		new_connection_(),
 		handler_(handler)
 	{
@@ -51,18 +51,20 @@ namespace servercore {
 
 	void server::run()
 	{
-		// Create a pool of threads to run all of the io_contexts.
-		std::vector<boost::shared_ptr<boost::thread> > threads;
-		for (std::size_t i = 0; i < thread_pool_size_; ++i)
-		{
-			boost::shared_ptr<boost::thread> thread(new boost::thread(
-				boost::bind(&boost::asio::io_context::run, &io_context_)));
-			threads.push_back(thread);
-		}
+		//// Create a pool of threads to run all of the io_contexts.
+		//std::vector<boost::shared_ptr<boost::thread> > threads;
+		//for (std::size_t i = 0; i < thread_pool_size_; ++i)
+		//{
+		//	boost::shared_ptr<boost::thread> thread(new boost::thread(
+		//		boost::bind(&boost::asio::io_context::run, &io_context_)));
+		//	threads.push_back(thread);
+		//}
 
-		// Wait for all threads in the pool to exit.
-		for (std::size_t i = 0; i < threads.size(); ++i)
-			threads[i]->join();
+		//// Wait for all threads in the pool to exit.
+		//for (std::size_t i = 0; i < threads.size(); ++i)
+		//	threads[i]->join();
+
+		io_context_pool_.run();
 	}
 
 	void server::setRestrictByAttribute(std::string key, std::string value, size_t num)
@@ -81,10 +83,24 @@ namespace servercore {
 	void server::start_accept()
 	{
 		auto hander = handler_.newHandler();
-		new_connection_.reset(new connection(io_context_, hander,connection_service_));
+		//new_connection_.reset(new connection(io_context_, 
+		//	hander,connection_service_, server_tasks_));
+
+		//acceptor_.async_accept(new_connection_->socket(),
+		//	boost::bind(&server::handle_accept, this,
+		//		boost::asio::placeholders::error));
+
+		new_connection_.reset(new connection(
+			io_context_pool_.get_io_context(), 
+			hander, connection_service_, server_tasks_));
 		acceptor_.async_accept(new_connection_->socket(),
 			boost::bind(&server::handle_accept, this,
 				boost::asio::placeholders::error));
+	}
+
+	void server::start_deal_task()
+	{
+
 	}
 
 	void server::handle_accept(const boost::system::error_code& e)

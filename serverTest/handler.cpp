@@ -3,7 +3,7 @@
 
 
 handler::handler():
-	IHandler(4,1)
+	IConnectionHandler(4,1)
 {
 }
 
@@ -38,4 +38,8 @@ void handler::readBodyHandler(std::vector<uint8_t> buf)
 	setAttribute("appid", value);
 	std::lock_guard<std::mutex> mu(cout_mu);
 	std::cout << str << std::endl;
+	std::string send_buf = "ÒÑÊÕµ½";
+	std::vector<uint8_t> send_buf_char;
+	send_buf_char.assign(send_buf.begin(), send_buf.end());
+	connection_->send(send_buf_char);
 }
