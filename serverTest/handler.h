@@ -15,5 +15,7 @@ public:
 		boost::shared_ptr<handler> hand(new handler());
 		return hand;
 	}
+
+	void serverTaskHandler(std::tuple<std::vector<std::string>, int> task) override{};
 };
 

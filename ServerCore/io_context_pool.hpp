@@ -1,4 +1,5 @@
-//
+#pragma once
+
 // io_context_pool.hpp
 // ~~~~~~~~~~~~~~~~~~~
 //

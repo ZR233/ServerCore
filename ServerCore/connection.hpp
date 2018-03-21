@@ -1,3 +1,5 @@
+#pragma once
+
 //
 // connection.hpp
 // ~~~~~~~~~~~~~~
@@ -19,6 +21,7 @@
 #include <iostream>
 #include <set>
 #include <deque>
+#include <boost/thread/condition_variable.hpp>
 
 
 namespace servercore {
@@ -28,19 +31,26 @@ namespace servercore {
 	public:
 		void addTask(std::vector<std::string> parameters, int task_type)
 		{
-			std::lock_guard<std::mutex> mu(task_mu_);
+			boost::unique_lock<boost::mutex> mu(task_mu_);
 			auto task = std::tie(parameters, task_type);
 			tasks_.push_back(task);
+			m_cond_.notify_one();
 		}
-		//std::tuple<std::vector<std::string>, int> getTask()
-		//{
-		//	std::lock_guard<std::mutex> mu(task_mu_);
-		//	auto task = tasks_.front();
-		//	tasks_.pop_front();
-		//	return task;
-		//}
-	//private:
-		std::mutex task_mu_;
+		std::tuple<std::vector<std::string>, int> popTask()
+		{
+			boost::unique_lock<boost::mutex> mu(task_mu_);
+			if (tasks_.empty())
+			{
+				//如果队列中没有任务，则等待互斥锁 
+				m_cond_.wait(mu);//
+			}
+			auto task = tasks_.front();
+			tasks_.pop_front();
+			return task;
+		}
+	private:
+		boost::condition_variable_any m_cond_;//条件变量
+		boost::mutex task_mu_;
 		std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
 	};
 	class connection_handler
@@ -52,6 +62,8 @@ namespace servercore {
 		virtual void readHeadHandler(std::vector<uint8_t> buf) = 0;
 		//消息体处理
 		virtual void readBodyHandler(std::vector<uint8_t> buf) = 0;
+		//服务器任务处理
+		virtual void serverTaskHandler(std::tuple<std::vector<std::string>, int> task) = 0;
 		//返回 new 自身 
 		//boost::shared_ptr<子类>
 		virtual boost::shared_ptr<connection_handler> newHandler() = 0;
@@ -98,6 +110,11 @@ namespace servercore {
 		{
 			server_tasks_->addTask(parameters,task_type);
 		}
+		/*std::tuple<std::vector<std::string>, int> popServerTask()
+		{
+			auto task = server_tasks_->popTask();
+			return task;
+		}*/
 		std::vector<uint8_t> buf_head_;
 		std::vector<uint8_t> buf_body_;
 		std::map<std::string, std::string> attribute_;
@@ -113,6 +130,8 @@ namespace servercore {
 		virtual ~connectionbase() {};
 		virtual std::string getAttribute(std::string key) = 0;
 		virtual void send(std::vector<uint8_t>& buf) = 0;
+		virtual void addServerTask(std::vector<std::string> parameters, int task_type) = 0;
+		virtual boost::asio::io_context* getIo() = 0;
 		virtual void stop()
 		{
 			stop_flag_ = true;
@@ -198,7 +217,6 @@ namespace servercore {
 	/// Represents a single connection from a client.
 	class connection:
 		public boost::enable_shared_from_this<connection>,
-		private boost::noncopyable,
 		public connectionbase
 	{
 	public:
@@ -226,11 +244,15 @@ namespace servercore {
 		void readBody();
 		void doWrite();
 		void send(std::vector<uint8_t>& buf) override;
+		void addServerTask(std::vector<std::string> parameters, int task_type) override
+		{
+			server_task_.addTask(parameters, task_type);
+		}
 		boost::asio::io_context::strand* getStrand()
 		{
 			return &strand_;
 		}
-		boost::asio::io_context* getIo()
+		boost::asio::io_context* getIo() override
 		{
 			return &io_context_;
 		}

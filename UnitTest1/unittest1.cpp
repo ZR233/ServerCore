@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../ServerCore/Server.h"
+#include "../ServerCore/Server.hpp"
 #include "../../ZRUtils/ZRUtils/Utils.hpp"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

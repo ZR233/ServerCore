@@ -1,19 +1,10 @@
-//
-// server.cpp
-// ~~~~~~~~~~
-//
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
 #include "stdafx.h"
 #include "server.hpp"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
-
+#include "Includes.hpp"
 
 namespace servercore {
 
@@ -64,7 +55,24 @@ namespace servercore {
 		//for (std::size_t i = 0; i < threads.size(); ++i)
 		//	threads[i]->join();
 
+		//服务器任务处理
+		boost::thread serverTaskDealThread([&] {
+			while (true)
+			{
+				try
+				{
+					handler_.serverTaskHandler(server_tasks_.popTask());
+				}
+				catch (std::exception &e)
+				{
+
+					boost::lock_guard<boost::mutex> mu(externvar::cout_mu);
+					std::cout << e.what()<<std::endl;
+				}
+			}
+		});
 		io_context_pool_.run();
+		serverTaskDealThread.join();
 	}
 
 	void server::setRestrictByAttribute(std::string key, std::string value, size_t num)
