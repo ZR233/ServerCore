@@ -21,5 +21,11 @@ namespace UnitTest1
 			uint64_t a = 111;
 			Assert::AreEqual(ntohll(a), zrutils::ntoh64(a));
 		}
+		TEST_METHOD(hton64)
+		{
+			// TODO: 在此输入测试代码
+			uint64_t a = 11111111111111;
+			Assert::AreEqual(htonll(a), zrutils::hton64(a));
+		}
 	};
 }

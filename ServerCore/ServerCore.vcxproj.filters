@@ -30,9 +30,6 @@
     <ClInclude Include="ClientRoom.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Includes.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="connection.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -43,6 +40,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="io_context_pool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogInit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="externvar.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +62,7 @@
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Includes.cpp">
+    <ClCompile Include="CLogInit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

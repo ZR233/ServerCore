@@ -1,10 +1,10 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "server.hpp"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
-#include "Includes.hpp"
+
 
 namespace servercore {
 
@@ -55,7 +55,7 @@ namespace servercore {
 		//for (std::size_t i = 0; i < threads.size(); ++i)
 		//	threads[i]->join();
 
-		//·şÎñÆ÷ÈÎÎñ´¦Àí
+		//æœåŠ¡å™¨ä»»åŠ¡å¤„ç†
 		boost::thread serverTaskDealThread([&] {
 			while (true)
 			{
@@ -66,8 +66,8 @@ namespace servercore {
 				catch (std::exception &e)
 				{
 
-					boost::lock_guard<boost::mutex> mu(externvar::cout_mu);
-					std::cout << e.what()<<std::endl;
+					//boost::lock_guard<boost::mutex> mu(externvar::cout_mu);
+					//std::cout << e.what()<<std::endl;
 				}
 			}
 		});
@@ -116,7 +116,7 @@ namespace servercore {
 		if (!e)
 		{
 			//std::lock_guard<std::mutex> mu(cout_mu);
-			std::cout << "¿Í»§¶ËÁ¬½Ó" << std::endl;
+			std::cout << "å®¢æˆ·ç«¯è¿æ¥" << std::endl;
 			new_connection_->start();
 		}
 
