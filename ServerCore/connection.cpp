@@ -25,7 +25,8 @@ namespace servercore {
 				(*iter)->stop();
 				iter = connection_ptrs_.erase(iter);
 			}
-			++iter;
+			else
+				++iter;
 		}
 	}
 	bool connection_service::jion(boost::shared_ptr< connection> connection_ptr)
@@ -161,5 +162,11 @@ namespace servercore {
 		{
 			doWrite();
 		}
+	}
+	void connection::stop()
+	{
+		stop_flag_ = true;
+		handler_->kickClientHandler();
+		socket_.close();
 	}
 } // namespace servercore

@@ -51,6 +51,7 @@ namespace servercore
 	public:
 		CLog();
 		~CLog();
+		void ini();
 		void log();
 	};
 }

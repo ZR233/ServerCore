@@ -30,13 +30,12 @@ namespace servercore
 
 	CLog::CLog()
 	{
-
 		// For now we only create a text output sink:
 		typedef sinks::asynchronous_sink< sinks::text_ostream_backend > text_sink;
 		shared_ptr< text_sink > pSink(new text_sink());
-		std::locale::global(std::locale(""));
-		pSink->imbue(std::locale(""));
 
+
+		pSink->imbue(std::locale(""));
 		{
 			// The good thing about sink frontends is that they are provided out-of-box and
 			// take away thread-safety burden from the sink backend implementors. Even if you
@@ -44,7 +43,7 @@ namespace servercore
 			// to do it in a thread safe manner. All you need is to acquire a locking pointer
 			// to the backend.
 			text_sink::locked_backend_ptr pBackend = pSink->locked_backend();
-			
+
 			// Now, as long as pBackend lives, you may work with the backend without
 			// interference of other threads that might be trying to log.
 
@@ -52,21 +51,22 @@ namespace servercore
 			shared_ptr< std::ostream > pStream(&std::clog, boost::null_deleter());
 			pBackend->add_stream(pStream);
 		}
-		
+
 		pSink->set_formatter(expr::stream
 			<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
 			<< "[" << expr::attr< severity_level >("Severity") << "]"
 			<< expr::message);
 		pSink->set_filter(expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);
 		/*logging::add_console_log(std::clog,
-			keywords::format = expr::stream
-			<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
-			<< "[" << expr::attr< severity_level >("Severity") << "]"
-			<< expr::message,
-			keywords::filter = expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);*/
+		keywords::format = expr::stream
+		<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
+		<< "[" << expr::attr< severity_level >("Severity") << "]"
+		<< expr::message,
+		keywords::filter = expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);*/
 
 		logging::core::get()->add_sink(pSink);
 		// One can also use lambda expressions to setup filters and formatters
+
 		if (externvar::log_save_lv == 0)
 		{
 			logging::add_file_log
@@ -158,10 +158,18 @@ namespace servercore
 		}
 		// Also let's add some commonly used attributes, like timestamp and record counter.
 		logging::add_common_attributes();
-		logging::core::get()->add_thread_attribute("Scope", attrs::named_scope());
+		//logging::core::get()->add_thread_attribute("Scope", attrs::named_scope());
 
 		BOOST_LOG_FUNCTION();
+		
 	}
+
+	void CLog::ini()
+	{
+		
+	}
+
+
 	void CLog::log()
 	{
 		//BOOST_LOG_SEV(wlg::get(), 1) << L"Handler析构";

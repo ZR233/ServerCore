@@ -25,6 +25,8 @@
 #include "CLog.h"
 
 namespace servercore {
+
+	class connection;
 	class connection;
 	class server_tasks
 	{
@@ -67,6 +69,8 @@ namespace servercore {
 		//返回 new 自身 
 		//boost::shared_ptr<子类>
 		virtual boost::shared_ptr<connection_handler> newHandler() = 0;
+		//
+		virtual void kickClientHandler() {};
 		//待实现函数-------------------------------------------------
 
 		connection_handler(size_t head_len, size_t body_len)
@@ -78,9 +82,10 @@ namespace servercore {
 		{
 			//WLOG wlg;
 			//BOOST_LOG_SEV(wlg, debug) << L"connection_Handler析构";
+
+
 			BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
-			std::locale::global(std::locale(""));
-			std::wcout << L"析构了" << std::endl;
+
 		};
 		std::vector<uint8_t> getBufHead()
 		{
@@ -165,13 +170,11 @@ namespace servercore {
 			//BOOST_LOG_SEV(wlg, debug) << L"客户端析构";
 			//LOG lg;
 			//BOOST_LOG_SEV(lg, debug) << "客户端析构";
-
+			BOOST_LOG_SEV(wlg::get(), warning) << L"客户端析构";
 			BOOST_LOG_SEV(wlg::get(), debug) << L"客户端析构";
 		}
-		virtual void stop()
-		{
-			stop_flag_ = true;
-		}
+		virtual void stop();
+
 		virtual std::string getAttribute(std::string key)
 		{
 			return handler_->getAttribute(key);
