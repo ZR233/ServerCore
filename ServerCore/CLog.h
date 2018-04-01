@@ -41,23 +41,18 @@ inline std::basic_ostream< CharT, TraitsT >& operator<< (
 		strm << static_cast< int >(lvl);
 	return strm;
 }
-BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lg, boost::log::sources::logger_mt)
-BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(wlg, boost::log::sources::wlogger_mt)
+BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lg, boost::log::sources::severity_logger_mt< severity_level >)
+BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(wlg, boost::log::sources::wseverity_logger_mt< severity_level >)
+
 //初始化日志
 namespace servercore
 {
-	class CLog
-	{
-	public:
-		CLog();
-		~CLog();
-		void ini();
-		void log();
-	};
+	void logIni();
+
 }
 #ifndef LOG
 #define LOG boost::log::sources::severity_logger< severity_level >
 #endif // !LOG
 #ifndef WLOG
-#define WLOG boost::log::sources::wlogger
+#define WLOG boost::log::sources::wseverity_logger< severity_level >
 #endif // !LOG

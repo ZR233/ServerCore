@@ -27,8 +27,9 @@ namespace servercore {
 		signals_.add(SIGQUIT);
 #endif // defined(SIGQUIT)
 		signals_.async_wait(boost::bind(&server::handle_stop, this));
-		//externvar::clog.ini();
 		std::locale::global(std::locale(""));
+		logIni();
+
 		// Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
 		boost::asio::ip::tcp::resolver resolver(io_context_);
 		boost::asio::ip::tcp::endpoint endpoint =

@@ -19,6 +19,7 @@
 
 namespace servercore
 {
+
 	namespace logging = boost::log;
 	namespace sinks = boost::log::sinks;
 	namespace attrs = boost::log::attributes;
@@ -26,16 +27,16 @@ namespace servercore
 	namespace expr = boost::log::expressions;
 	namespace keywords = boost::log::keywords;
 	using boost::shared_ptr;
+	
 
-
-	CLog::CLog()
+	void logIni()
 	{
 		// For now we only create a text output sink:
 		typedef sinks::asynchronous_sink< sinks::text_ostream_backend > text_sink;
 		shared_ptr< text_sink > pSink(new text_sink());
 
 
-		pSink->imbue(std::locale(""));
+		//pSink->imbue(std::locale("en_US.UTF-8"));
 		{
 			// The good thing about sink frontends is that they are provided out-of-box and
 			// take away thread-safety burden from the sink backend implementors. Even if you
@@ -73,7 +74,7 @@ namespace servercore
 			(
 				keywords::auto_flush = true,
 				keywords::open_mode = std::ios::app,
-				keywords::file_name = externvar::log_location + "%Y%m%d_debug_%N.log",
+				keywords::file_name = externvar::log_location + "log/%Y%m%d_debug_%N.log",
 				keywords::rotation_size = 10 * 1024 * 1024,/* rotate files every 10 MiB... */
 				keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
 				keywords::filter = expr::attr< severity_level >("Severity") >= debug,
@@ -94,7 +95,7 @@ namespace servercore
 				*/
 			);
 		}
-		if (externvar::log_save_lv  < 2)
+		if (externvar::log_save_lv < 2)
 		{
 			logging::add_file_log
 			(
@@ -126,7 +127,7 @@ namespace servercore
 				<< expr::message
 			);
 		}
-		if (externvar::log_save_lv< 4)
+		if (externvar::log_save_lv < 4)
 		{
 			logging::add_file_log
 			(
@@ -161,21 +162,7 @@ namespace servercore
 		//logging::core::get()->add_thread_attribute("Scope", attrs::named_scope());
 
 		BOOST_LOG_FUNCTION();
-		
-	}
 
-	void CLog::ini()
-	{
-		
-	}
-
-
-	void CLog::log()
-	{
-		//BOOST_LOG_SEV(wlg::get(), 1) << L"Handler析构";
-	}
-	CLog::~CLog()
-	{
 	}
 
 }

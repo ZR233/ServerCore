@@ -6,6 +6,6 @@ namespace servercore {
 		string externvar::log_location = "";
 		int  externvar::log_filter_lv = 0;
 		int externvar::log_save_lv = 0;
-		CLog externvar::clog;
+		//CLog externvar::clog;
 	//}//externvar
 }//servercore

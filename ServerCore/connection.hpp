@@ -80,11 +80,11 @@ namespace servercore {
 		};
 		virtual ~connection_handler()
 		{
-			//WLOG wlg;
-			//BOOST_LOG_SEV(wlg, debug) << L"connection_Handler析构";
+			WLOG wlg;
+			BOOST_LOG_SEV(wlg, debug) << L"connection_Handler析构";
 
 
-			BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
+			//BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
 
 		};
 		std::vector<uint8_t> getBufHead()
@@ -166,12 +166,12 @@ namespace servercore {
 			server_tasks& server_task);
 		~connection()
 		{
-			//WLOG wlg;
-			//BOOST_LOG_SEV(wlg, debug) << L"客户端析构";
+			WLOG wlg;
+			BOOST_LOG_SEV(wlg, debug) << L"客户端析构";
 			//LOG lg;
 			//BOOST_LOG_SEV(lg, debug) << "客户端析构";
-			BOOST_LOG_SEV(wlg::get(), warning) << L"客户端析构";
-			BOOST_LOG_SEV(wlg::get(), debug) << L"客户端析构";
+			//BOOST_LOG_SEV(wlg::get(), warning) << L"客户端析构";
+			//BOOST_LOG_SEV(wlg::get(), debug) << L"客户端析构";
 		}
 		virtual void stop();
 

@@ -78,7 +78,6 @@ namespace servercore {
 
 		server_tasks server_tasks_;
 
-
 	};
 
 } // namespace servercore
