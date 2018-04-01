@@ -17,7 +17,7 @@
 #include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-
+#include "CIoThread.h"
 
 namespace servercore {
 
@@ -42,10 +42,10 @@ private:
   typedef boost::shared_ptr<boost::asio::io_context> io_context_ptr;
   typedef boost::asio::executor_work_guard<
     boost::asio::io_context::executor_type> io_context_work;
-
+  typedef boost::shared_ptr<CIoThread> io_thread_ptr;
   /// The pool of io_contexts.
   std::vector<io_context_ptr> io_contexts_;
-
+  std::vector<io_thread_ptr> io_threads_;
   /// The work that keeps the io_contexts running.
   std::list<io_context_work> work_;
 

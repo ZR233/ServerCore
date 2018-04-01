@@ -1,25 +1,21 @@
-#include "stdafx.h"
-#include "CLogInit.h"
+﻿#include "stdafx.h"
+#include "CLog.h"
 #include "externvar.hpp"
 #include <iostream>
+#include <boost/locale/generator.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
-#include <boost/log/common.hpp>
-#include <boost/log/expressions.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
+
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
-
-
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
-#include <boost/locale/generator.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/log/support/date_time.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sinks.hpp>
+#include <boost/log/support/date_time.hpp>
 
 namespace servercore
 {
@@ -32,11 +28,14 @@ namespace servercore
 	using boost::shared_ptr;
 
 
-	CLogInit::CLogInit()
+	CLog::CLog()
 	{
+
 		// For now we only create a text output sink:
 		typedef sinks::asynchronous_sink< sinks::text_ostream_backend > text_sink;
 		shared_ptr< text_sink > pSink(new text_sink());
+		std::locale::global(std::locale(""));
+		pSink->imbue(std::locale(""));
 
 		{
 			// The good thing about sink frontends is that they are provided out-of-box and
@@ -163,8 +162,12 @@ namespace servercore
 
 		BOOST_LOG_FUNCTION();
 	}
-
-	CLogInit::~CLogInit()
+	void CLog::log()
+	{
+		//BOOST_LOG_SEV(wlg::get(), 1) << L"Handler析构";
+	}
+	CLog::~CLog()
 	{
 	}
+
 }

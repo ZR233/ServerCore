@@ -19,7 +19,7 @@
 #include <boost/shared_ptr.hpp>
 #include "connection.hpp"
 #include "io_context_pool.hpp"
-
+#include "externvar.hpp"
 
 namespace servercore {
 

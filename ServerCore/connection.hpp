@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 //
 // connection.hpp
@@ -22,7 +22,7 @@
 #include <set>
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
-
+#include "CLog.h"
 
 namespace servercore {
 	class connection;
@@ -41,7 +41,7 @@ namespace servercore {
 			boost::unique_lock<boost::mutex> mu(task_mu_);
 			if (tasks_.empty())
 			{
-				//Èç¹û¶ÓÁĞÖĞÃ»ÓĞÈÎÎñ£¬ÔòµÈ´ı»¥³âËø 
+				//å¦‚æœé˜Ÿåˆ—ä¸­æ²¡æœ‰ä»»åŠ¡ï¼Œåˆ™ç­‰å¾…äº’æ–¥é” 
 				m_cond_.wait(mu);//
 			}
 			auto task = tasks_.front();
@@ -49,27 +49,25 @@ namespace servercore {
 			return task;
 		}
 	private:
-		boost::condition_variable_any m_cond_;//Ìõ¼ş±äÁ¿
+		boost::condition_variable_any m_cond_;//æ¡ä»¶å˜é‡
 		boost::mutex task_mu_;
 		std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
 	};
 	class connection_handler
 	{
 	public:
-		//´ıÊµÏÖº¯Êı-------------------------------------------------
+		//å¾…å®ç°å‡½æ•°-------------------------------------------------
 
-		//ÏûÏ¢Í·´¦Àí
+		//æ¶ˆæ¯å¤´å¤„ç†
 		virtual void readHeadHandler(std::vector<uint8_t> buf) = 0;
-		//ÏûÏ¢Ìå´¦Àí
+		//æ¶ˆæ¯ä½“å¤„ç†
 		virtual void readBodyHandler(std::vector<uint8_t> buf) = 0;
-		//·şÎñÆ÷ÈÎÎñ´¦Àí
+		//æœåŠ¡å™¨ä»»åŠ¡å¤„ç†
 		virtual void serverTaskHandler(std::tuple<std::vector<std::string>, int> task) = 0;
-		//·µ»Ø new ×ÔÉí 
-		//boost::shared_ptr<×ÓÀà>
+		//è¿”å› new è‡ªèº« 
+		//boost::shared_ptr<å­ç±»>
 		virtual boost::shared_ptr<connection_handler> newHandler() = 0;
-		//´ıÊµÏÖº¯Êı-------------------------------------------------
-
-
+		//å¾…å®ç°å‡½æ•°-------------------------------------------------
 
 		connection_handler(size_t head_len, size_t body_len)
 		{
@@ -78,7 +76,11 @@ namespace servercore {
 		};
 		virtual ~connection_handler()
 		{
-			//std::cout << "HandlerÎö¹¹" << std::endl;
+			//WLOG wlg;
+			//BOOST_LOG_SEV(wlg, debug) << L"connection_Handlerææ„";
+			BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handlerææ„";
+			std::locale::global(std::locale(""));
+			std::wcout << L"ææ„äº†" << std::endl;
 		};
 		std::vector<uint8_t> getBufHead()
 		{
@@ -88,7 +90,6 @@ namespace servercore {
 		{
 			return buf_body_;
 		}
-
 		void setAttribute(std::string key, std::string value)
 		{
 			attribute_[key] = value;
@@ -121,82 +122,16 @@ namespace servercore {
 		connection* connection_=nullptr;
 		server_tasks* server_tasks_ = nullptr;
 	};
-	class connectionbase :
-		boost::noncopyable
-	{
-	public:
-		connectionbase() :
-			stop_flag_(false) {};
-		virtual ~connectionbase() {};
-		virtual std::string getAttribute(std::string key) = 0;
-		virtual void send(std::vector<uint8_t>& buf) = 0;
-		virtual void addServerTask(std::vector<std::string> parameters, int task_type) = 0;
-		virtual boost::asio::io_context* getIo() = 0;
-		virtual void stop()
-		{
-			stop_flag_ = true;
-		}
-	protected:
-		//Í£Ö¹±êÊ¶
-		bool stop_flag_;
-	};
 	class connection_service
 	{
 	public:
 		connection_service() :max_link_(100000) {};
 		~connection_service() {};
-		bool jion(boost::shared_ptr< connectionbase> connection_ptr)
-		{
-			std::lock_guard<std::mutex> mu(set_mu_);
-			/*for (auto restrict_attribute : restrict_attributes_)
-			{
-				size_t num = 0;
-				for (auto connection_ptr : connection_ptrs_)
-				{
-					std::string key, value;
-					size_t num_max;
-					std::tie(key, value, num_max) = restrict_attribute;
-					if (connection_ptr->getAttribute(key) == value)
-					{
-						++num;
-						if (num >= num_max)
-						{
-							connection_ptr->stop();
-							return false;
-						}
-					}
-				}
-			}*/
-
-			if (connection_ptrs_.size() < max_link_)
-			{
-				connection_ptrs_.insert(connection_ptr);
-				return true;
-			}
-			else {
-				connection_ptr->stop();
-				return false;
-			}
-		}
-		void leave(boost::shared_ptr< connectionbase> connection_ptr)
-		{
-			std::lock_guard<std::mutex> mu(set_mu_);
-			connection_ptrs_.erase(connection_ptr);
-		}
-		void kickByAttribute(std::string key, std::string value)
-		{
-			std::lock_guard<std::mutex> mu(set_mu_);
-			auto iter = connection_ptrs_.begin();
-			for (; iter != connection_ptrs_.end();)
-			{
-				if ((*iter)->getAttribute(key) == value)
-				{
-					(*iter)->stop();
-					iter = connection_ptrs_.erase(iter);
-				}
-				++iter;
-			}
-		}
+		bool jion(boost::shared_ptr< connection> connection_ptr);
+		
+		void leave(boost::shared_ptr< connection> connection_ptr);
+		void kickByAttribute(std::string key, std::string value);
+		
 		void setRestrictByAttribute(std::string key, std::string value, size_t num)
 		{
 			auto restrict = std::tie(key, value, num);
@@ -208,16 +143,15 @@ namespace servercore {
 		}
 	private:
 		std::mutex set_mu_;
-		std::set<boost::shared_ptr< connectionbase>> connection_ptrs_;
-		//ÏŞÖÆµÇÂ½Ìõ¼ş key value numbers
+		std::set<boost::shared_ptr< connection>> connection_ptrs_;
+		//é™åˆ¶ç™»é™†æ¡ä»¶ key value numbers
 		std::vector<std::tuple<std::string, std::string, size_t>> restrict_attributes_;
-		//×î´óÁ¬½ÓÊı
+		//æœ€å¤§è¿æ¥æ•°
 		size_t max_link_;
 	};
 	/// Represents a single connection from a client.
 	class connection:
-		public boost::enable_shared_from_this<connection>,
-		public connectionbase
+		public boost::enable_shared_from_this<connection>
 	{
 	public:
 		/// Construct a connection with the given io_context.
@@ -227,24 +161,37 @@ namespace servercore {
 			server_tasks& server_task);
 		~connection()
 		{
-			std::cout << "¿Í»§¶ËÎö¹¹" << std::endl;
-		}
+			//WLOG wlg;
+			//BOOST_LOG_SEV(wlg, debug) << L"å®¢æˆ·ç«¯ææ„";
+			//LOG lg;
+			//BOOST_LOG_SEV(lg, debug) << "å®¢æˆ·ç«¯ææ„";
 
-		std::string getAttribute(std::string key)override
+			BOOST_LOG_SEV(wlg::get(), debug) << L"å®¢æˆ·ç«¯ææ„";
+		}
+		virtual void stop()
+		{
+			stop_flag_ = true;
+		}
+		virtual std::string getAttribute(std::string key)
 		{
 			return handler_->getAttribute(key);
 		}
-		/// Get the socket associated with the connection.
+		virtual void send(std::vector<uint8_t>& buf);
+		void start();
 		boost::asio::ip::tcp::socket& socket();
+	protected:
+		//åœæ­¢æ ‡è¯†
+		bool stop_flag_;
+
+		/// Get the socket associated with the connection.
+		
 
 		/// Start the first asynchronous operation for the connection.
-		void start();
-		void readHead();
 		
+		void readHead();
 		void readBody();
-		void doWrite();
-		void send(std::vector<uint8_t>& buf) override;
-		void addServerTask(std::vector<std::string> parameters, int task_type) override
+		void doWrite();	
+		virtual void addServerTask(std::vector<std::string> parameters, int task_type)
 		{
 			server_task_.addTask(parameters, task_type);
 		}
@@ -252,7 +199,7 @@ namespace servercore {
 		{
 			return &strand_;
 		}
-		boost::asio::io_context* getIo() override
+		virtual boost::asio::io_context* getIo()
 		{
 			return &io_context_;
 		}

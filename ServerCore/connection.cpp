@@ -1,4 +1,4 @@
-//
+Ôªø//
 // connection.cpp
 // ~~~~~~~~~~~~~~
 //
@@ -14,6 +14,58 @@
 
 namespace servercore {
 
+	void connection_service::kickByAttribute(std::string key, std::string value)
+	{
+		std::lock_guard<std::mutex> mu(set_mu_);
+		auto iter = connection_ptrs_.begin();
+		for (; iter != connection_ptrs_.end();)
+		{
+			if ((*iter)->getAttribute(key) == value)
+			{
+				(*iter)->stop();
+				iter = connection_ptrs_.erase(iter);
+			}
+			++iter;
+		}
+	}
+	bool connection_service::jion(boost::shared_ptr< connection> connection_ptr)
+	{
+		std::lock_guard<std::mutex> mu(set_mu_);
+		/*for (auto restrict_attribute : restrict_attributes_)
+		{
+		size_t num = 0;
+		for (auto connection_ptr : connection_ptrs_)
+		{
+		std::string key, value;
+		size_t num_max;
+		std::tie(key, value, num_max) = restrict_attribute;
+		if (connection_ptr->getAttribute(key) == value)
+		{
+		++num;
+		if (num >= num_max)
+		{
+		connection_ptr->stop();
+		return false;
+		}
+		}
+		}
+		}*/
+
+		if (connection_ptrs_.size() < max_link_)
+		{
+			connection_ptrs_.insert(connection_ptr);
+			return true;
+		}
+		else {
+			connection_ptr->stop();
+			return false;
+		}
+	}
+	void connection_service::leave(boost::shared_ptr< connection> connection_ptr)
+	{
+		std::lock_guard<std::mutex> mu(set_mu_);
+		connection_ptrs_.erase(connection_ptr);
+	}
 	connection::connection(boost::asio::io_context& io_context,
 		boost::shared_ptr<connection_handler > handler,
 		connection_service& conn_service,
@@ -23,7 +75,8 @@ namespace servercore {
 		handler_(handler),
 		conn_service_(conn_service),
 		io_context_(io_context),
-		server_task_(server_task)
+		server_task_(server_task),
+		stop_flag_(false)
 	{
 		handler_->registConnection(*this);
 		handler_->registServerTasks(server_task);
@@ -98,7 +151,7 @@ namespace servercore {
 				conn_service_.leave(shared_from_this());
 		})/*)*/;
 	}
-	//∑¢ÀÕ–≈œ¢
+	//ÂèëÈÄÅ‰ø°ÊÅØ
 	void connection::send(std::vector<uint8_t>& buf)
 	{
 		std::lock_guard<std::mutex> mu(send_mu_);

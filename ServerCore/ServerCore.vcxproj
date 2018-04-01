@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_WIN32_WINNT=0x601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -147,7 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CLogInit.h" />
+    <ClInclude Include="CIoThread.h" />
+    <ClInclude Include="CLog.h" />
     <ClInclude Include="connection.hpp" />
     <ClInclude Include="IClient.hpp" />
     <ClInclude Include="ClientRoom.hpp" />
@@ -160,8 +161,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CLogInit.cpp" />
+    <ClCompile Include="CIoThread.cpp" />
+    <ClCompile Include="CLog.cpp" />
     <ClCompile Include="connection.cpp" />
+    <ClCompile Include="externvar.cpp" />
     <ClCompile Include="io_context_pool.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">

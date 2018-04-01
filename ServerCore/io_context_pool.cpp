@@ -28,43 +28,62 @@ io_context_pool::io_context_pool(std::size_t pool_size)
   // exit until they are explicitly stopped.
   for (std::size_t i = 0; i < pool_size; ++i)
   {
-    io_context_ptr io_context(new boost::asio::io_context);
-    io_contexts_.push_back(io_context);
-    work_.push_back(boost::asio::make_work_guard(*io_context));
+    //io_context_ptr io_context(new boost::asio::io_context);
+
+	io_thread_ptr io_context(new CIoThread);
+    //io_contexts_.push_back(io_context);
+
+	io_threads_.push_back(io_context);
+    //work_.push_back(boost::asio::make_work_guard(*io_context));
+	work_.push_back(boost::asio::make_work_guard(*(io_context->getIo())));
   }
 }
 
 void io_context_pool::run()
 {
-  // Create a pool of threads to run all of the io_contexts.
-  std::vector<boost::shared_ptr<boost::thread> > threads;
-  for (std::size_t i = 0; i < io_contexts_.size(); ++i)
-  {
-    boost::shared_ptr<boost::thread> thread(new boost::thread(
-          boost::bind(&boost::asio::io_context::run, io_contexts_[i])));
-    threads.push_back(thread);
-  }
+  //// Create a pool of threads to run all of the io_contexts.
+  //std::vector<boost::shared_ptr<boost::thread> > threads;
+  //for (std::size_t i = 0; i < io_contexts_.size(); ++i)
+  //{
+  //  boost::shared_ptr<boost::thread> thread(new boost::thread(
+  //        boost::bind(&boost::asio::io_context::run, io_contexts_[i])));
+  //  threads.push_back(thread);
+  //}
 
-  // Wait for all threads in the pool to exit.
-  for (std::size_t i = 0; i < threads.size(); ++i)
-    threads[i]->join();
+  //// Wait for all threads in the pool to exit.
+  //for (std::size_t i = 0; i < threads.size(); ++i)
+  //  threads[i]->join();
+	for(auto var: io_threads_)
+	{
+		var->run();
+	}
 }
 
 void io_context_pool::stop()
 {
-  // Explicitly stop all io_contexts.
-  for (std::size_t i = 0; i < io_contexts_.size(); ++i)
-    io_contexts_[i]->stop();
+  //// Explicitly stop all io_contexts.
+  //for (std::size_t i = 0; i < io_contexts_.size(); ++i)
+  //  io_contexts_[i]->stop();
+	for (auto thread: io_threads_)
+	{
+		thread->stop();
+	}
 }
 
 boost::asio::io_context& io_context_pool::get_io_context()
 {
   // Use a round-robin scheme to choose the next io_context to use.
-  boost::asio::io_context& io_context = *io_contexts_[next_io_context_];
+  //boost::asio::io_context& io_context = *io_contexts_[next_io_context_];
+  //++next_io_context_;
+  //if (next_io_context_ == io_contexts_.size())
+  //  next_io_context_ = 0;
+  //return io_context;
+
+  auto& io_thread = *io_threads_[next_io_context_];
   ++next_io_context_;
-  if (next_io_context_ == io_contexts_.size())
+  if (next_io_context_ == io_threads_.size())
     next_io_context_ = 0;
-  return io_context;
+  return *(io_thread.getIo());
 }
 
 } // namespace servercore

@@ -1,6 +1,6 @@
 #pragma once
 #include "connection.hpp"
-
+#include "externvar.hpp"
 namespace servercore
 {
 	class IConnectionHandler :

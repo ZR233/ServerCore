@@ -42,10 +42,13 @@
     <ClInclude Include="io_context_pool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CLogInit.h">
+    <ClInclude Include="externvar.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="externvar.hpp">
+    <ClInclude Include="CLog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CIoThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +65,13 @@
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CLogInit.cpp">
+    <ClCompile Include="CLog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="externvar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CIoThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
