@@ -149,11 +149,9 @@
   <ItemGroup>
     <ClInclude Include="CIoThread.h" />
     <ClInclude Include="CLog.h" />
-    <ClInclude Include="connection.hpp" />
+    <ClInclude Include="connection.h" />
     <ClInclude Include="IClient.hpp" />
-    <ClInclude Include="ClientRoom.hpp" />
-    <ClInclude Include="IClientBase.hpp" />
-    <ClInclude Include="IHandlers.hpp" />
+    <ClInclude Include="IConnectionHandler.h" />
     <ClInclude Include="externvar.hpp" />
     <ClInclude Include="io_context_pool.hpp" />
     <ClInclude Include="server.hpp" />
@@ -165,6 +163,7 @@
     <ClCompile Include="CLog.cpp" />
     <ClCompile Include="connection.cpp" />
     <ClCompile Include="externvar.cpp" />
+    <ClCompile Include="IConnectionHandler.cpp" />
     <ClCompile Include="io_context_pool.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">

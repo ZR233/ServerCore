@@ -101,7 +101,7 @@ namespace servercore
 			(
 				keywords::auto_flush = true,
 				keywords::open_mode = std::ios::app,
-				keywords::file_name = externvar::log_location + "%Y%m%d_ifo_%N.log",
+				keywords::file_name = externvar::log_location + "log/%Y%m%d_ifo_%N.log",
 				keywords::rotation_size = 10 * 1024 * 1024,/* rotate files every 10 MiB... */
 				keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
 				keywords::filter = expr::attr< severity_level >("Severity") >= ifo,
@@ -117,7 +117,7 @@ namespace servercore
 			(
 				keywords::auto_flush = true,
 				keywords::open_mode = std::ios::app,
-				keywords::file_name = externvar::log_location + "%Y%m%d_key_%N.log",
+				keywords::file_name = externvar::log_location + "log/%Y%m%d_key_%N.log",
 				keywords::rotation_size = 10 * 1024 * 1024,/* rotate files every 10 MiB... */
 				keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
 				keywords::filter = expr::attr< severity_level >("Severity") >= key,
@@ -133,7 +133,7 @@ namespace servercore
 			(
 				keywords::auto_flush = true,
 				keywords::open_mode = std::ios::app,
-				keywords::file_name = externvar::log_location + "%Y%m%d_warning_%N.log",
+				keywords::file_name = externvar::log_location + "log/%Y%m%d_warning_%N.log",
 				keywords::rotation_size = 10 * 1024 * 1024,/* rotate files every 10 MiB... */
 				keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
 				keywords::filter = expr::attr< severity_level >("Severity") >= warning,
@@ -148,7 +148,7 @@ namespace servercore
 			(
 				keywords::auto_flush = true,
 				keywords::open_mode = std::ios::app,
-				keywords::file_name = externvar::log_location + "%Y%m%d_error_%N.log",
+				keywords::file_name = externvar::log_location + "log/%Y%m%d_error_%N.log",
 				keywords::rotation_size = 10 * 1024 * 1024,/* rotate files every 10 MiB... */
 				keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
 				keywords::filter = expr::attr< severity_level >("Severity") >= error,

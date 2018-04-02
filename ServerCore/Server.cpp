@@ -10,7 +10,7 @@ namespace servercore {
 
 	server::server(const std::string& address, const std::string& port,
 		const std::string& doc_root, std::size_t thread_pool_size,
-		connection_handler& handler): 
+		IConnectionHandler& handler):
 		thread_pool_size_(thread_pool_size),
 		io_context_pool_(thread_pool_size),
 		signals_(io_context_pool_.get_io_context()),

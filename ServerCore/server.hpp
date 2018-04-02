@@ -17,10 +17,10 @@
 #include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include "connection.hpp"
+#include "connection.h"
 #include "io_context_pool.hpp"
 #include "externvar.hpp"
-
+#include "IConnectionHandler.h"
 namespace servercore {
 
 	/// The top-level class of the HTTP server.
@@ -32,7 +32,7 @@ namespace servercore {
 		/// serve up files from the given directory.
 		explicit server(const std::string& address, const std::string& port,
 			const std::string& doc_root, std::size_t thread_pool_size,
-			connection_handler& handler);
+			IConnectionHandler& handler);
 
 		/// Run the server's io_context loop.
 		void run();
@@ -72,7 +72,7 @@ namespace servercore {
 		/// The next connection to be accepted.
 		connection_ptr new_connection_;
 
-		connection_handler& handler_;
+		IConnectionHandler& handler_;
 
 		connection_service connection_service_;
 

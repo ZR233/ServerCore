@@ -21,22 +21,10 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="IClientBase.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="IClient.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ClientRoom.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="connection.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="server.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IHandlers.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="io_context_pool.hpp">
@@ -49,6 +37,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CIoThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IConnectionHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="connection.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -72,6 +66,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CIoThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IConnectionHandler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

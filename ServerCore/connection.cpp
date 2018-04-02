@@ -8,7 +8,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #include "stdafx.h"
-#include "connection.hpp"
+#include "connection.h"
 #include <vector>
 #include <boost/bind.hpp>
 
@@ -68,7 +68,7 @@ namespace servercore {
 		connection_ptrs_.erase(connection_ptr);
 	}
 	connection::connection(boost::asio::io_context& io_context,
-		boost::shared_ptr<connection_handler > handler,
+		boost::shared_ptr<IConnectionHandler> handler,
 		connection_service& conn_service,
 		server_tasks& server_task):
 		strand_(io_context),

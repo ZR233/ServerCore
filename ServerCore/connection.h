@@ -10,9 +10,6 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef HTTP_SERVER3_CONNECTION_HPP
-#define HTTP_SERVER3_CONNECTION_HPP
-
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
@@ -23,11 +20,12 @@
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
 #include "CLog.h"
+#include "IConnectionHandler.h"
 
 namespace servercore {
 
 	class connection;
-	class connection;
+
 	class server_tasks
 	{
 	public:
@@ -55,78 +53,7 @@ namespace servercore {
 		boost::mutex task_mu_;
 		std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
 	};
-	class connection_handler
-	{
-	public:
-		//待实现函数-------------------------------------------------
 
-		//消息头处理
-		virtual void readHeadHandler(std::vector<uint8_t> buf) = 0;
-		//消息体处理
-		virtual void readBodyHandler(std::vector<uint8_t> buf) = 0;
-		//服务器任务处理
-		virtual void serverTaskHandler(std::tuple<std::vector<std::string>, int> task) = 0;
-		//返回 new 自身 
-		//boost::shared_ptr<子类>
-		virtual boost::shared_ptr<connection_handler> newHandler() = 0;
-		//
-		virtual void kickClientHandler() {};
-		//待实现函数-------------------------------------------------
-
-		connection_handler(size_t head_len, size_t body_len)
-		{
-			buf_head_.assign(head_len, 0);
-			buf_body_.assign(body_len, 0);
-		};
-		virtual ~connection_handler()
-		{
-			WLOG wlg;
-			BOOST_LOG_SEV(wlg, debug) << L"connection_Handler析构";
-
-
-			//BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
-
-		};
-		std::vector<uint8_t> getBufHead()
-		{
-			return buf_head_;
-		}
-		std::vector<uint8_t> getBufBody()
-		{
-			return buf_body_;
-		}
-		void setAttribute(std::string key, std::string value)
-		{
-			attribute_[key] = value;
-		}
-		std::string getAttribute(std::string key)
-		{
-			return attribute_[key];
-		}
-		void registConnection(connection& conn)
-		{
-			connection_ = &conn;
-		}
-		void registServerTasks(server_tasks& server_ta)
-		{
-			server_tasks_ = &server_ta;
-		}
-	protected:
-		void addServerTask(std::vector<std::string> parameters, int task_type)
-		{
-			server_tasks_->addTask(parameters,task_type);
-		}
-		/*std::tuple<std::vector<std::string>, int> popServerTask()
-		{
-			auto task = server_tasks_->popTask();
-			return task;
-		}*/
-		std::vector<uint8_t> buf_head_;
-		std::vector<uint8_t> buf_body_;
-		std::map<std::string, std::string> attribute_;
-		connection* connection_=nullptr;
-		server_tasks* server_tasks_ = nullptr;
-	};
 	class connection_service
 	{
 	public:
@@ -161,7 +88,7 @@ namespace servercore {
 	public:
 		/// Construct a connection with the given io_context.
 		explicit connection(boost::asio::io_context& io_context,
-			boost::shared_ptr<connection_handler > handler,
+			boost::shared_ptr<IConnectionHandler> handler,
 			connection_service& conn_service,
 			server_tasks& server_task);
 		~connection()
@@ -218,7 +145,7 @@ namespace servercore {
 
 		std::vector<uint8_t> buf_head_;
 		std::vector<uint8_t> buf_body_;
-		boost::shared_ptr<connection_handler > handler_;
+		boost::shared_ptr<IConnectionHandler> handler_;
 		connection_service& conn_service_;
 		server_tasks& server_task_;
 		std::mutex send_mu_;
@@ -230,4 +157,3 @@ namespace servercore {
 
 } // namespace http
 
-#endif // HTTP_SERVER3_CONNECTION_HPP
