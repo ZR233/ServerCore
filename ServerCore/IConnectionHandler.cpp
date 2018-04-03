@@ -5,15 +5,15 @@
 #include <boost\asio.hpp>
 #include <boost\locale.hpp>
 namespace servercore {
-	IConnectionHandler::IConnectionHandler(size_t head_len, size_t body_len)
+	IConnectionHandler::IConnectionHandler()
 	{
-		buf_head_.assign(head_len, 0);
-		buf_body_.assign(body_len, 0);
+		buf_head_.assign(4, 0);
+		buf_body_.clear();
 	};
 	IConnectionHandler::~IConnectionHandler()
 	{
-		WLOG wlg;
-		BOOST_LOG_SEV(wlg, debug) << L"connection_Handler析构";
+		/*WLOG wlg;*/
+		BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
 		//BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
 
 	};

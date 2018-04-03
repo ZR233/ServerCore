@@ -20,7 +20,8 @@
 #include "connection.h"
 #include "io_context_pool.hpp"
 #include "externvar.hpp"
-#include "IConnectionHandler.h"
+#include "IHandlers.h"
+#include "CLog.h"
 namespace servercore {
 
 	/// The top-level class of the HTTP server.
@@ -32,7 +33,7 @@ namespace servercore {
 		/// serve up files from the given directory.
 		explicit server(const std::string& address, const std::string& port,
 			const std::string& doc_root, std::size_t thread_pool_size,
-			IConnectionHandler& handler);
+			IHandlers& handler);
 
 		/// Run the server's io_context loop.
 		void run();
@@ -41,7 +42,7 @@ namespace servercore {
 		void kickByAttribute(std::string key, std::string value);
 
 	private:
-
+		externvar extini;
 		/// Initiate an asynchronous accept operation.
 		void start_accept();
 
@@ -52,7 +53,7 @@ namespace servercore {
 		/// Handle a request to stop the server.
 		void handle_stop();
 
-
+		IHandlers& handler_;
 
 		/// The number of threads that will call io_context::run().
 		std::size_t thread_pool_size_;
@@ -72,7 +73,7 @@ namespace servercore {
 		/// The next connection to be accepted.
 		connection_ptr new_connection_;
 
-		IConnectionHandler& handler_;
+		
 
 		connection_service connection_service_;
 

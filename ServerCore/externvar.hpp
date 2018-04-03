@@ -8,9 +8,12 @@ namespace servercore
 	using string = std::string;
 	class externvar
 	{
-		externvar() {}
-		~externvar() {}
 	public:
+		externvar() {
+			std::locale::global(std::locale(""));
+			logIni();
+		}
+		~externvar() {}
 		static string log_location;
 		static int log_filter_lv;
 		static int log_save_lv;

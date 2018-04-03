@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "server.hpp"
+#include "server.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -8,11 +8,14 @@
 
 namespace servercore {
 
+
+
 	server::server(const std::string& address, const std::string& port,
 		const std::string& doc_root, std::size_t thread_pool_size,
-		IConnectionHandler& handler):
+		IHandlers& handler) :
+		extini(),
 		thread_pool_size_(thread_pool_size),
-		io_context_pool_(thread_pool_size),
+		io_context_pool_(thread_pool_size, handler),
 		signals_(io_context_pool_.get_io_context()),
 		acceptor_(io_context_pool_.get_io_context()),
 		new_connection_(),
@@ -27,8 +30,7 @@ namespace servercore {
 		signals_.add(SIGQUIT);
 #endif // defined(SIGQUIT)
 		signals_.async_wait(boost::bind(&server::handle_stop, this));
-		std::locale::global(std::locale(""));
-		logIni();
+
 
 		// Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
 		boost::asio::ip::tcp::resolver resolver(io_context_);
@@ -59,23 +61,24 @@ namespace servercore {
 		//	threads[i]->join();
 
 		//服务器任务处理
-		boost::thread serverTaskDealThread([&] {
-			while (true)
-			{
-				try
-				{
-					handler_.serverTaskHandler(server_tasks_.popTask());
-				}
-				catch (std::exception &e)
-				{
+		//boost::thread serverTaskDealThread([&] {
+		//	while (true)
+		//	{
+		//		try
+		//		{
+		//			handler_.serverTaskHandler(server_tasks_.popTask());
+		//		}
+		//		catch (std::exception &e)
+		//		{
 
-					//boost::lock_guard<boost::mutex> mu(externvar::cout_mu);
-					//std::cout << e.what()<<std::endl;
-				}
-			}
-		});
+		//			//boost::lock_guard<boost::mutex> mu(externvar::cout_mu);
+		//			//std::cout << e.what()<<std::endl;
+		//		}
+		//	}
+		//});
+		//io_context_pool_.registHandler(handler_);
 		io_context_pool_.run();
-		serverTaskDealThread.join();
+		//serverTaskDealThread.join();
 	}
 
 	void server::setRestrictByAttribute(std::string key, std::string value, size_t num)
@@ -93,17 +96,11 @@ namespace servercore {
 	}
 	void server::start_accept()
 	{
-		auto hander = handler_.newHandler();
-		//new_connection_.reset(new connection(io_context_, 
-		//	hander,connection_service_, server_tasks_));
-
-		//acceptor_.async_accept(new_connection_->socket(),
-		//	boost::bind(&server::handle_accept, this,
-		//		boost::asio::placeholders::error));
+		auto connection_hander = handler_.newHandler();
 
 		new_connection_.reset(new connection(
 			io_context_pool_.get_io_context(), 
-			hander, connection_service_, server_tasks_));
+			connection_hander, connection_service_, server_tasks_));
 		acceptor_.async_accept(new_connection_->socket(),
 			boost::bind(&server::handle_accept, this,
 				boost::asio::placeholders::error));

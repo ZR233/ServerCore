@@ -1,23 +1,12 @@
 #pragma once
 
-// io_context_pool.hpp
-// ~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
-#ifndef HTTP_SERVER2_IO_SERVICE_POOL_HPP
-#define HTTP_SERVER2_IO_SERVICE_POOL_HPP
-
 #include <boost/asio.hpp>
 #include <list>
 #include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include "CIoThread.h"
+#include "IHandlers.h"
 
 namespace servercore {
 
@@ -27,7 +16,7 @@ class io_context_pool
 {
 public:
   /// Construct the io_context pool.
-  explicit io_context_pool(std::size_t pool_size);
+  explicit io_context_pool(std::size_t pool_size, IHandlers &handlers);
 
   /// Run all io_context objects in the pool.
   void run();
@@ -51,9 +40,9 @@ private:
 
   /// The next io_context to use for a connection.
   std::size_t next_io_context_;
+
+  IHandlers &handlers_;
 };
 
 } // namespace servercore
 
-
-#endif // HTTP_SERVER2_IO_SERVICE_POOL_HPP

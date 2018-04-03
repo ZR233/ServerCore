@@ -2,8 +2,7 @@
 #include "handler.h"
 #include <iostream>
 #include <boost\asio.hpp>
-handler::handler():
-	IConnectionHandler(4,1)
+handler::handler()
 {
 }
 

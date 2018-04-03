@@ -24,9 +24,6 @@
     <ClInclude Include="IClient.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="server.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="io_context_pool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -43,6 +40,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="connection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ITaskHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IHandlers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,6 +75,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="IConnectionHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ITaskHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IHandlers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
