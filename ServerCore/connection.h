@@ -36,6 +36,7 @@ namespace servercore {
 			tasks_.push_back(task);
 			m_cond_.notify_one();
 		}
+		//取出一条任务，如果没有任务则阻塞
 		std::tuple<std::vector<std::string>, int> popTask()
 		{
 			boost::unique_lock<boost::mutex> mu(task_mu_);
@@ -121,10 +122,7 @@ namespace servercore {
 		void readHead();
 		void readBody();
 		void doWrite();	
-		virtual void addServerTask(std::vector<std::string> parameters, int task_type)
-		{
-			server_task_.addTask(parameters, task_type);
-		}
+		virtual void addServerTask(std::vector<std::string> parameters, int task_type);
 		boost::asio::io_context::strand* getStrand()
 		{
 			return &strand_;
