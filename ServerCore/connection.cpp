@@ -165,8 +165,12 @@ namespace servercore {
 	}
 	void connection::stop()
 	{
-		stop_flag_ = true;
 		handler_->kickClientHandler();
+		stop_flag_ = true;
 		socket_.close();
+	}
+	void connection::addServerTask(std::vector<std::string> parameters, int task_type)
+	{
+		server_task_.addTask(parameters, task_type);
 	}
 } // namespace servercore

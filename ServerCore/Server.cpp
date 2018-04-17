@@ -7,9 +7,6 @@
 
 
 namespace servercore {
-
-
-
 	server::server(const std::string& address, const std::string& port,
 		const std::string& doc_root, std::size_t thread_pool_size,
 		IHandlers& handler) :
