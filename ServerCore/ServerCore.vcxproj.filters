@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="IClient.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="io_context_pool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>

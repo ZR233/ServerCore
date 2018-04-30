@@ -150,7 +150,6 @@
     <ClInclude Include="CIoThread.h" />
     <ClInclude Include="CLog.h" />
     <ClInclude Include="connection.h" />
-    <ClInclude Include="IClient.hpp" />
     <ClInclude Include="IConnectionHandler.h" />
     <ClInclude Include="externvar.hpp" />
     <ClInclude Include="IHandlers.h" />
