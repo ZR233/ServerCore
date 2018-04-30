@@ -9,8 +9,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef HTTP_SERVER3_SERVER_HPP
-#define HTTP_SERVER3_SERVER_HPP
+
 
 #include <boost/asio.hpp>
 #include <string>
@@ -22,6 +21,11 @@
 #include "externvar.hpp"
 #include "IHandlers.h"
 #include "CLog.h"
+
+
+
+
+
 namespace servercore {
 
 	/// The top-level class of the HTTP server.
@@ -82,6 +86,3 @@ namespace servercore {
 	};
 
 } // namespace servercore
-
-
-#endif // HTTP_SERVER3_SERVER_HPP

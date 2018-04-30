@@ -1,7 +1,7 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../ServerCore/Server.hpp"
-#include "../../ZRUtils/ZRUtils/Utils.hpp"
+#include "../ServerCore/CTaskList.h"
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest1
@@ -10,22 +10,16 @@ namespace UnitTest1
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(TestTask)
 		{
-			// TODO: ÔÚ´ËÊäÈë²âÊÔ´úÂë
-	
+			// TODO: åœ¨æ­¤è¾“å…¥æµ‹è¯•ä»£ç 
+			auto task = servercore::CTask("A");
+			task.addParam("åå­—", "å‘¨ç¿");
+			std::string str = task.getValue("åå­—1");
+			std::string str3 = task.getType();
+			std::string str2 = "A";
+			Assert::AreEqual(str3, str2);
 		}
-		TEST_METHOD(ntoh64)
-		{
-			// TODO: ÔÚ´ËÊäÈë²âÊÔ´úÂë
-			uint64_t a = 111;
-			Assert::AreEqual(ntohll(a), zrutils::ntoh64(a));
-		}
-		TEST_METHOD(hton64)
-		{
-			// TODO: ÔÚ´ËÊäÈë²âÊÔ´úÂë
-			uint64_t a = 11111111111111;
-			Assert::AreEqual(htonll(a), zrutils::hton64(a));
-		}
+
 	};
 }

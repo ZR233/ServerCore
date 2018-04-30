@@ -1,5 +1,5 @@
 #pragma once
-#include "../../ZRUtils/ZRUtils/Utils.hpp"
+#include "../ZRUtils/ZRUtils/Utils.hpp"
 #include <boost/thread/mutex.hpp>
 #include <string>
 #include "CLog.h"
