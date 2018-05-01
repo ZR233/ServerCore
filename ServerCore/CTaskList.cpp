@@ -29,15 +29,14 @@ namespace servercore {
 	{
 	}
 
-	void CTaskList::addTask(std::vector<std::string> parameters, int task_type)
+	void CTaskList::addTask(CTask task)
 	{
 		boost::unique_lock<boost::mutex> mu(task_mu_);
-		auto task = std::tie(parameters, task_type);
 		tasks_.push_back(task);
 		m_cond_.notify_one();
 	}
 
-	std::tuple<std::vector<std::string>, int> CTaskList::popTask()
+	CTask CTaskList::popTask()
 	{
 		boost::unique_lock<boost::mutex> mu(task_mu_);
 		if (tasks_.empty())

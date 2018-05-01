@@ -35,12 +35,12 @@ namespace servercore {
 	public:
 		CTaskList();
 		~CTaskList();
-		void addTask(std::vector<std::string> parameters, int task_type);
+		void addTask(CTask task);
 		//取出一条任务，如果没有任务则阻塞
-		std::tuple<std::vector<std::string>, int> popTask();
+		CTask popTask();
 	private:
 		boost::condition_variable_any m_cond_;//条件变量
 		boost::mutex task_mu_;
-		std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
+		std::deque<CTask> tasks_;
 	};
 }//namespace servercore

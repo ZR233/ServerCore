@@ -2,7 +2,7 @@
 #include "ITaskHandler.h"
 #include "IConnectionHandler.h"
 #include "connection.h"
-
+#include "../ZRUtils/ZRUtils/Utils.hpp"
 
 namespace servercore {
 	class IHandlers :

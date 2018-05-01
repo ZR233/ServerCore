@@ -57,6 +57,12 @@
     <ClInclude Include="CTaskList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CBytesList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CAgentPool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -96,6 +102,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTaskList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CBytesList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CAgentPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
