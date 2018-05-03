@@ -20,40 +20,41 @@
 #include <deque>
 #include <boost/thread/condition_variable.hpp>
 #include "CLog.h"
-#include "IConnectionHandler.h"
+#include "IServerHandler.h"
 
 namespace servercore {
 
 	class connection;
-
-	class server_tasks
-	{
-	public:
-		void addTask(std::vector<std::string> parameters, int task_type)
-		{
-			boost::unique_lock<boost::mutex> mu(task_mu_);
-			auto task = std::tie(parameters, task_type);
-			tasks_.push_back(task);
-			m_cond_.notify_one();
-		}
-		//取出一条任务，如果没有任务则阻塞
-		std::tuple<std::vector<std::string>, int> popTask()
-		{
-			boost::unique_lock<boost::mutex> mu(task_mu_);
-			if (tasks_.empty())
-			{
-				//如果队列中没有任务，则等待互斥锁 
-				m_cond_.wait(mu);//
-			}
-			auto task = tasks_.front();
-			tasks_.pop_front();
-			return task;
-		}
-	private:
-		boost::condition_variable_any m_cond_;//条件变量
-		boost::mutex task_mu_;
-		std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
-	};
+	class CTask;
+	class CTaskList;
+	//class server_tasks
+	//{
+	//public:
+	//	void addTask(std::vector<std::string> parameters, int task_type)
+	//	{
+	//		boost::unique_lock<boost::mutex> mu(task_mu_);
+	//		auto task = std::tie(parameters, task_type);
+	//		tasks_.push_back(task);
+	//		m_cond_.notify_one();
+	//	}
+	//	//取出一条任务，如果没有任务则阻塞
+	//	std::tuple<std::vector<std::string>, int> popTask()
+	//	{
+	//		boost::unique_lock<boost::mutex> mu(task_mu_);
+	//		if (tasks_.empty())
+	//		{
+	//			//如果队列中没有任务，则等待互斥锁 
+	//			m_cond_.wait(mu);//
+	//		}
+	//		auto task = tasks_.front();
+	//		tasks_.pop_front();
+	//		return task;
+	//	}
+	//private:
+	//	boost::condition_variable_any m_cond_;//条件变量
+	//	boost::mutex task_mu_;
+	//	std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
+	//};
 
 	class connection_service
 	{
@@ -89,9 +90,9 @@ namespace servercore {
 	public:
 		/// Construct a connection with the given io_context.
 		explicit connection(boost::asio::io_context& io_context,
-			boost::shared_ptr<IConnectionHandler> handler,
+			boost::shared_ptr<IServerHandler> handler,
 			connection_service& conn_service,
-			server_tasks& server_task);
+			CTaskList& task_list);
 		~connection()
 		{
 			WLOG wlg;
@@ -122,7 +123,7 @@ namespace servercore {
 		void readHead();
 		void readBody();
 		void doWrite();	
-		virtual void addServerTask(std::vector<std::string> parameters, int task_type);
+		virtual void addServerTask(CTask task);
 		boost::asio::io_context::strand* getStrand()
 		{
 			return &strand_;
@@ -143,9 +144,9 @@ namespace servercore {
 
 		std::vector<uint8_t> buf_head_;
 		std::vector<uint8_t> buf_body_;
-		boost::shared_ptr<IConnectionHandler> handler_;
+		boost::shared_ptr<IServerHandler> handler_;
 		connection_service& conn_service_;
-		server_tasks& server_task_;
+		CTaskList& task_list_;
 		std::mutex send_mu_;
 		std::deque<std::vector<uint8_t>> send_que_;
 	};

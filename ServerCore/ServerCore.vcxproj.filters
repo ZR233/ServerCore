@@ -33,9 +33,6 @@
     <ClInclude Include="CIoThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="IConnectionHandler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="connection.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -43,9 +40,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="IHandlers.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="server.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CAgent.h">
@@ -63,6 +57,18 @@
     <ClInclude Include="CAgentPool.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CPlatform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IModules.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IServerHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -74,9 +80,6 @@
     <ClCompile Include="io_context_pool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="server.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CLog.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -84,9 +87,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CIoThread.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="IConnectionHandler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ITaskHandler.cpp">
@@ -110,8 +110,17 @@
     <ClCompile Include="CAgentPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="CPlatform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IModules.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IServerHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

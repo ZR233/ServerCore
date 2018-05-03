@@ -18,13 +18,15 @@ public:
   /// Construct the io_context pool.
   explicit io_context_pool(std::size_t pool_size, IHandlers &handlers);
 
-  /// Run all io_context objects in the pool.
+  // Run all io_context objects in the pool.
   void run();
 
-  /// Stop all io_context objects in the pool.
+  // Stop all io_context objects in the pool.
   void stop();
 
-  /// Get an io_context to use.
+  //
+  void join();
+  // Get an io_context to use.
   boost::asio::io_context& get_io_context();
 
 private:

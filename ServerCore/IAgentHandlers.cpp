@@ -20,13 +20,18 @@ namespace servercore {
 			<<"\n内容:"<< str;
 
 	}
-	void IAgentHandlers::connectFail(CAgent* this_agent)
+	void IAgentHandlers::connectFail()
 	{
 
 	}
 	void IAgentHandlers::setDefaultIo(boost::asio::io_context& io)
 	{
 		default_io_ptr_ = &io;
+	}
+
+	void IAgentHandlers::setThisAgentPtr(CAgent * this_agent)
+	{
+		this_agent_ptr_ = this_agent;
 	}
 
 }//namespace servercore

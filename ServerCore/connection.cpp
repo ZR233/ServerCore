@@ -11,6 +11,8 @@
 #include "connection.h"
 #include <vector>
 #include <boost/bind.hpp>
+#include "CTaskList.h"
+
 
 namespace servercore {
 
@@ -67,20 +69,22 @@ namespace servercore {
 		std::lock_guard<std::mutex> mu(set_mu_);
 		connection_ptrs_.erase(connection_ptr);
 	}
-	connection::connection(boost::asio::io_context& io_context,
-		boost::shared_ptr<IConnectionHandler> handler,
+	connection::connection(
+		boost::asio::io_context& io_context,
+		boost::shared_ptr<IServerHandler> handler,
 		connection_service& conn_service,
-		server_tasks& server_task):
+		CTaskList& task_list
+	):
 		strand_(io_context),
 		socket_(io_context),
 		handler_(handler),
 		conn_service_(conn_service),
 		io_context_(io_context),
-		server_task_(server_task),
+		task_list_(task_list),
 		stop_flag_(false)
 	{
 		handler_->registConnection(*this);
-		handler_->registServerTasks(server_task);
+		handler_->registServerTasks(task_list);
 	}
 
 	boost::asio::ip::tcp::socket& connection::socket()
@@ -169,8 +173,8 @@ namespace servercore {
 		stop_flag_ = true;
 		socket_.close();
 	}
-	void connection::addServerTask(std::vector<std::string> parameters, int task_type)
+	void connection::addServerTask(CTask task)
 	{
-		server_task_.addTask(parameters, task_type);
+		task_list_.addTask(task);
 	}
 } // namespace servercore

@@ -1,9 +1,12 @@
 #pragma once
 #include "CAgent.h"
 #include <map>
+#include "IModules.h"
+
 
 namespace servercore {
-	class CAgentPool
+	class CAgentPool:
+		public IAgentModule
 	{
 	public:
 		CAgentPool();
@@ -12,7 +15,7 @@ namespace servercore {
 			IAgentHandlers& agent_handlers,
 			boost::asio::io_context& io,
 			CTaskList& task_list
-			);
+			)override;
 		friend class CAgent;
 	private:
 		uint64_t client_count_;

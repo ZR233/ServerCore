@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "server.h"
+#include "CServer.h"
 #include <stdexcept>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -28,8 +28,6 @@ void io_context_pool::run()
 {
 	for(auto var: io_threads_)
 		var->run();
-	for (auto var : io_threads_)
-		var->join();
 }
 
 void io_context_pool::stop()
@@ -38,6 +36,12 @@ void io_context_pool::stop()
 	{
 		thread->stop();
 	}
+}
+
+void io_context_pool::join()
+{
+	for (auto var : io_threads_)
+		var->join();
 }
 
 boost::asio::io_context& io_context_pool::get_io_context()

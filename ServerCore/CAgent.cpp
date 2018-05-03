@@ -26,6 +26,7 @@ namespace servercore {
 		destroy_deadline_timer_(io)
 	{
 		agent_handlers_ptr_->setDefaultIo(io);
+		agent_handlers_ptr_->setThisAgentPtr(this);
 	}
 
 	CAgent::~CAgent()
@@ -46,8 +47,9 @@ namespace servercore {
 				socket_.close();
 				BOOST_LOG_SEV(lg::get(), debug) << "连接服务器失败\nIP:"<< ed.address()<<"PORT:"
 					<<std::to_string(ed.port());
-				agent_handlers_ptr_->connectFail(this);
+				agent_handlers_ptr_->connectFail();
 			}
+
 			//发送
 			do_write();
 			//定时从send_que读取发送
@@ -130,6 +132,7 @@ namespace servercore {
 	{
 		if (stop_flag_)
 			return;
+		std::lock_guard<std::mutex> g(send_mu);
 		if (send_que_.empty())
 			return;
 		auto self(shared_from_this());
@@ -141,9 +144,11 @@ namespace servercore {
 				return;
 			if (!ec)
 			{
+				std::lock_guard<std::mutex> g(send_mu);
 				send_que_.pop_front();
 				if (!send_que_.empty())
 				{
+					g.~lock_guard();
 					do_write();
 				}
 			}

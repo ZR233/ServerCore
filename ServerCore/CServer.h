@@ -21,68 +21,71 @@
 #include "externvar.hpp"
 #include "IHandlers.h"
 #include "CLog.h"
-
-
+#include "IModules.h"
+#include "CTaskList.h"
 
 
 
 namespace servercore {
 
-	/// The top-level class of the HTTP server.
-	class server
-		: private boost::noncopyable
+	// The top-level class of the server.
+	class CServer:
+		private boost::noncopyable,
+		public IServerModule
 	{
 	public:
-		/// Construct the server to listen on the specified TCP address and port, and
-		/// serve up files from the given directory.
-		explicit server(const std::string& address, const std::string& port,
-			const std::string& doc_root, std::size_t thread_pool_size,
+		// Construct the server to listen on the specified TCP address and port, and
+		// serve up files from the given directory.
+		explicit CServer(
+			std::string address, 
+			std::string port,
+			int thread_pool_size,
+			CTaskList& task_list,
 			IHandlers& handler);
 
-		/// Run the server's io_context loop.
+		// Run the server's io_context loop.
 		void run();
+
+		void join();
 		void setMaxLink(size_t max);
 		void setRestrictByAttribute(std::string key, std::string value, size_t num);
 		void kickByAttribute(std::string key, std::string value);
 
 	private:
-		externvar extini;
-		/// Initiate an asynchronous accept operation.
+
+		// Initiate an asynchronous accept operation.
 		void start_accept();
 
-		void start_deal_task();
-		/// Handle completion of an asynchronous accept operation.
+		// Handle completion of an asynchronous accept operation.
 		void handle_accept(const boost::system::error_code& e);
 
-		/// Handle a request to stop the server.
+		// Handle a request to stop the server.
 		void handle_stop();
 
 		IHandlers& handler_;
 
-		/// The number of threads that will call io_context::run().
+		// The number of threads that will call io_context::run().
 		std::size_t thread_pool_size_;
 
-		/// The pool of io_context objects used to perform asynchronous operations.
+		// The pool of io_context objects used to perform asynchronous operations.
 		io_context_pool io_context_pool_;
 
-		/// The io_context used to perform asynchronous operations.
+		// The io_context used to perform asynchronous operations.
 		boost::asio::io_context io_context_;
 
-		/// The signal_set is used to register for process termination notifications.
+		// The signal_set is used to register for process termination notifications.
 		boost::asio::signal_set signals_;
 
-		/// Acceptor used to listen for incoming connections.
+		// Acceptor used to listen for incoming connections.
 		boost::asio::ip::tcp::acceptor acceptor_;
 
-		/// The next connection to be accepted.
+		// The next connection to be accepted.
 		connection_ptr new_connection_;
-
-		
 
 		connection_service connection_service_;
 
-		server_tasks server_tasks_;
+		CTaskList& server_tasks_;
 
-	};
+	};//class server
 
 } // namespace servercore

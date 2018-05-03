@@ -2,16 +2,16 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <boost\shared_ptr.hpp>
+#include "CTaskList.h"
+
 namespace servercore
 {
 	class connection;
-	class server_tasks;
-	class IConnectionHandler
+	class IServerHandler
 	{
 	public:
-		IConnectionHandler();
-		virtual ~IConnectionHandler();
+		IServerHandler();
+		virtual ~IServerHandler();
 		//待实现函数-------------------------------------------------
 
 		//消息头处理
@@ -47,12 +47,21 @@ namespace servercore
 		{
 			connection_ = &conn;
 		}
-		void registServerTasks(server_tasks& server_ta)
+		void registServerTasks(CTaskList& server_ta)
 		{
 			server_tasks_ = &server_ta;
 		}
+		//设置消息长度数据段的长度
+		void setHeadLen(int len)
+		{
+			head_len_ = len;
+		}
+		int getHeadLen()
+		{
+			return head_len_;
+		}
 	protected:
-		void addServerTask(std::vector<std::string> parameters, int task_type);
+		void addServerTask(CTask task);
 		/*std::tuple<std::vector<std::string>, int> popServerTask()
 		{
 		auto task = server_tasks_->popTask();
@@ -62,7 +71,8 @@ namespace servercore
 		std::vector<uint8_t> buf_body_;
 		std::map<std::string, std::string> attribute_;
 		connection* connection_ = nullptr;
-		server_tasks* server_tasks_ = nullptr;
+		CTaskList* server_tasks_ = nullptr;
+		int head_len_;
 	};
 }
 

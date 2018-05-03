@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "server.h"
+#include "CServer.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -7,15 +7,19 @@
 
 
 namespace servercore {
-	server::server(const std::string& address, const std::string& port,
-		const std::string& doc_root, std::size_t thread_pool_size,
-		IHandlers& handler) :
-		extini(),
+	CServer::CServer(
+		std::string address,
+		std::string port,
+		int thread_pool_size,
+		CTaskList& task_list,
+		IHandlers& handler
+	) :
 		thread_pool_size_(thread_pool_size),
 		io_context_pool_(thread_pool_size, handler),
 		signals_(io_context_pool_.get_io_context()),
 		acceptor_(io_context_pool_.get_io_context()),
 		new_connection_(),
+		server_tasks_(task_list),
 		handler_(handler)
 	{
 		// Register to handle the signals that indicate when the server should exit.
@@ -26,7 +30,7 @@ namespace servercore {
 #if defined(SIGQUIT)
 		signals_.add(SIGQUIT);
 #endif // defined(SIGQUIT)
-		signals_.async_wait(boost::bind(&server::handle_stop, this));
+		signals_.async_wait(boost::bind(&CServer::handle_stop, this));
 
 
 		// Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
@@ -41,7 +45,7 @@ namespace servercore {
 		start_accept();
 	}
 
-	void server::run()
+	void CServer::run()
 	{
 
 		//// Create a pool of threads to run all of the io_contexts.
@@ -77,21 +81,25 @@ namespace servercore {
 		io_context_pool_.run();
 		//serverTaskDealThread.join();
 	}
+	void CServer::join()
+	{
+		io_context_pool_.join();
+	}
 
-	void server::setRestrictByAttribute(std::string key, std::string value, size_t num)
+	void CServer::setRestrictByAttribute(std::string key, std::string value, size_t num)
 	{
 		connection_service_.setRestrictByAttribute(key, value, num);
 	}
 
-	void server::kickByAttribute(std::string key, std::string value)
+	void CServer::kickByAttribute(std::string key, std::string value)
 	{
 		connection_service_.kickByAttribute(key, value);
 	}
-	void server::setMaxLink(size_t max)
+	void CServer::setMaxLink(size_t max)
 	{
 		connection_service_.setMaxLink(max);
 	}
-	void server::start_accept()
+	void CServer::start_accept()
 	{
 		auto connection_hander = handler_.newHandler();
 
@@ -99,16 +107,11 @@ namespace servercore {
 			io_context_pool_.get_io_context(), 
 			connection_hander, connection_service_, server_tasks_));
 		acceptor_.async_accept(new_connection_->socket(),
-			boost::bind(&server::handle_accept, this,
+			boost::bind(&CServer::handle_accept, this,
 				boost::asio::placeholders::error));
 	}
 
-	void server::start_deal_task()
-	{
-
-	}
-
-	void server::handle_accept(const boost::system::error_code& e)
+	void CServer::handle_accept(const boost::system::error_code& e)
 	{
 		if (!e)
 		{
@@ -120,7 +123,7 @@ namespace servercore {
 		start_accept();
 	}
 
-	void server::handle_stop()
+	void CServer::handle_stop()
 	{
 		io_context_.stop();
 	}

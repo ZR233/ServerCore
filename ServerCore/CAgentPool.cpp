@@ -27,12 +27,13 @@ namespace servercore {
 		id += 1000 * time.tm_sec;
 		id += 1000 * 100 * time.tm_min;
 		id += 1000 * 100 * 100 * (time.tm_hour + 1);
-		auto agent = std::make_shared<CAgent>(CAgent(
+		std::shared_ptr<CAgent> agent(new CAgent(
 			id,
 			this,
 			agent_handlers,
 			io,
 			task_list));
 		agent_map_[id] = agent;
+		return agent;
 	}
 }

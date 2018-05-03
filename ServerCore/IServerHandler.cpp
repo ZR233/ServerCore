@@ -1,24 +1,25 @@
 ﻿#include "stdafx.h"
-#include "IConnectionHandler.h"
+#include "IServerHandler.h"
 #include "CLog.h"
 #include "connection.h"
 #include <boost\asio.hpp>
 #include <boost\locale.hpp>
 namespace servercore {
-	IConnectionHandler::IConnectionHandler()
+	IServerHandler::IServerHandler():
+		head_len_(4)
 	{
-		buf_head_.assign(4, 0);
+		buf_head_.assign(head_len_, 0);
 		buf_body_.clear();
 	};
-	IConnectionHandler::~IConnectionHandler()
+	IServerHandler::~IServerHandler()
 	{
 		/*WLOG wlg;*/
-		BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
+		BOOST_LOG_SEV(wlg::get(), debug) << L"server_Handler析构";
 		//BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
 
 	};
 
-	void IConnectionHandler::readHeadHandler(std::vector<uint8_t> buf)
+	void IServerHandler::readHeadHandler(std::vector<uint8_t> buf)
 	{
 		uint32_t len = 0;
 		memcpy_s(&len, 4, &(buf[0]), 4);
@@ -29,7 +30,7 @@ namespace servercore {
 		}
 		buf_body_.assign(len, 0);
 	}
-	void IConnectionHandler::readBodyHandler(std::vector<uint8_t> buf)
+	void IServerHandler::readBodyHandler(std::vector<uint8_t> buf)
 	{
 		if (buf.size() == 0)
 		{
@@ -44,8 +45,8 @@ namespace servercore {
 		send_buf_char.assign(send_buf.begin(), send_buf.end());
 		connection_->send(send_buf_char);
 	}
-	void IConnectionHandler::addServerTask(std::vector<std::string> parameters, int task_type) 
+	void IServerHandler::addServerTask(CTask task) 
 	{
-		//server_tasks_->addTask(parameters, task_type);
+		server_tasks_->addTask(task);
 	}
 }
