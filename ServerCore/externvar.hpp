@@ -17,6 +17,7 @@ namespace servercore
 		static string log_location;
 		static int log_filter_lv;
 		static int log_save_lv;
+		static int thread_num;
 	};
 
 }

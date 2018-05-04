@@ -12,6 +12,12 @@ namespace servercore {
 	IAgentHandlers::~IAgentHandlers()
 	{
 	}
+	std::shared_ptr<IAgentHandlers> IAgentHandlers::getNewInstance()
+	{
+		std::shared_ptr<IAgentHandlers> hand(new IAgentHandlers());
+		BOOST_LOG_SEV(wlg::get(), warning) << L"未重写IAgentHandlers子类的newHandler方法";
+		return hand;
+	}
 	void IAgentHandlers::dealRecvData(std::vector<uint8_t> data_buf)
 	{
 		std::string str;

@@ -2,7 +2,16 @@
 #include "ITaskHandler.h"
 #include "CLog.h"
 #include <boost\locale.hpp>
+
 namespace servercore {
+	void ITaskHandler::registerAgents(IAgentModule & agents)
+	{
+		agents_ = &agents;
+	}
+	void ITaskHandler::registerServer(IServerModule & server)
+	{
+		server_ = &server;
+	}
 	ITaskHandler::ITaskHandler()
 	{
 	}
@@ -12,14 +21,15 @@ namespace servercore {
 	{
 		BOOST_LOG_SEV(wlg::get(), debug) << L"ITaskHandler析构";
 	}
-	void ITaskHandler::taskHandler(std::tuple<std::vector<std::string>, int> task)
+	void ITaskHandler::taskHandler(CTask task)
 	{
-		BOOST_LOG_SEV(wlg::get(), debug) << L"-----------\n任务类型：" << std::to_wstring(std::get<1>(task));
-		for (auto string : std::get<0>(task))
-		{
-			std::wstring ws = boost::locale::conv::to_utf<wchar_t>(string, "GBK");
-			BOOST_LOG_SEV(wlg::get(), debug) << ws;
-		}
+		BOOST_LOG_SEV(wlg::get(), debug) << L"-----------\n任务类型：\n" << task.getType();
 		BOOST_LOG_SEV(wlg::get(), debug) << L"-----------";
+	}
+	std::shared_ptr<ITaskHandler> ITaskHandler::getNewInstance()
+	{
+		std::shared_ptr<ITaskHandler> hand(new ITaskHandler());
+		BOOST_LOG_SEV(wlg::get(), warning) << L"未重写ITaskHandler子类的getNewInstance方法";
+		return hand;
 	}
 }

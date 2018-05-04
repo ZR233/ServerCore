@@ -14,7 +14,7 @@ namespace servercore {
 	IServerHandler::~IServerHandler()
 	{
 		/*WLOG wlg;*/
-		BOOST_LOG_SEV(wlg::get(), debug) << L"server_Handler析构";
+		BOOST_LOG_SEV(wlg::get(), debug) << L"Server_Handler析构";
 		//BOOST_LOG_SEV(wlg::get(), debug) << L"connection_Handler析构";
 
 	};
@@ -43,7 +43,17 @@ namespace servercore {
 		std::string send_buf = "已收到";
 		std::vector<uint8_t> send_buf_char;
 		send_buf_char.assign(send_buf.begin(), send_buf.end());
+		uint32_t len = htonl(send_buf_char.size());
+		std::vector<uint8_t> send_len(4, 0);
+		memcpy_s(&(send_len[0]), 4, &len, 4);
+		send_buf_char.insert(send_buf_char.begin(), send_len.begin(), send_len.end());
 		connection_->send(send_buf_char);
+	}
+	std::shared_ptr<IServerHandler> IServerHandler::getNewInstance()
+	{
+		std::shared_ptr<IServerHandler> hand(new IServerHandler());
+		BOOST_LOG_SEV(wlg::get(), warning) << L"未重写IServerHandler子类的getNewInstance方法";
+		return hand;
 	}
 	void IServerHandler::addServerTask(CTask task) 
 	{

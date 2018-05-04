@@ -2,7 +2,8 @@
 #include "CAgentPool.h"
 #include <boost\date_time.hpp>
 namespace servercore {
-	CAgentPool::CAgentPool()
+	CAgentPool::CAgentPool(io_context_pool& io_pool):
+		io_pool_(io_pool)
 	{
 	}
 
@@ -12,8 +13,7 @@ namespace servercore {
 	}
 	std::shared_ptr<CAgent> CAgentPool::createAgent(
 			IAgentHandlers& agent_handlers,
-			boost::asio::io_context& io,
-			CTaskList& task_list
+			std::shared_ptr<CTaskList> task_list
 		)
 	{
 		auto pt = boost::posix_time::second_clock::local_time();
@@ -31,8 +31,8 @@ namespace servercore {
 			id,
 			this,
 			agent_handlers,
-			io,
-			task_list));
+			io_pool_.get_io_context(),
+			*task_list));
 		agent_map_[id] = agent;
 		return agent;
 	}

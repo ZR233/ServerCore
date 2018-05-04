@@ -5,7 +5,6 @@
 #include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include "CIoThread.h"
 #include "IHandlers.h"
 
 namespace servercore {
@@ -15,8 +14,8 @@ class io_context_pool
   : private boost::noncopyable
 {
 public:
-  /// Construct the io_context pool.
-  explicit io_context_pool(std::size_t pool_size, IHandlers &handlers);
+  // Construct the io_context pool.
+  explicit io_context_pool(std::size_t pool_size);
 
   // Run all io_context objects in the pool.
   void run();
@@ -33,17 +32,17 @@ private:
   typedef boost::shared_ptr<boost::asio::io_context> io_context_ptr;
   typedef boost::asio::executor_work_guard<
     boost::asio::io_context::executor_type> io_context_work;
-  typedef boost::shared_ptr<CIoThread> io_thread_ptr;
-  /// The pool of io_contexts.
+  typedef boost::shared_ptr<boost::thread> thread_ptr;
+
+  std::size_t pool_size_;
+  // The pool of io_contexts.
   std::vector<io_context_ptr> io_contexts_;
-  std::vector<io_thread_ptr> io_threads_;
-  /// The work that keeps the io_contexts running.
+  std::vector<thread_ptr> threads_;
+  // The work that keeps the io_contexts running.
   std::list<io_context_work> work_;
 
-  /// The next io_context to use for a connection.
+  // The next io_context to use for a connection.
   std::size_t next_io_context_;
-
-  IHandlers &handlers_;
 };
 
 } // namespace servercore

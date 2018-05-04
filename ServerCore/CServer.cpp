@@ -10,12 +10,11 @@ namespace servercore {
 	CServer::CServer(
 		std::string address,
 		std::string port,
-		int thread_pool_size,
+		io_context_pool& io_context_pool,
 		CTaskList& task_list,
-		IHandlers& handler
+		IServerHandler& handler
 	) :
-		thread_pool_size_(thread_pool_size),
-		io_context_pool_(thread_pool_size, handler),
+		io_context_pool_(io_context_pool),
 		signals_(io_context_pool_.get_io_context()),
 		acceptor_(io_context_pool_.get_io_context()),
 		new_connection_(),
@@ -101,7 +100,7 @@ namespace servercore {
 	}
 	void CServer::start_accept()
 	{
-		auto connection_hander = handler_.newHandler();
+		auto connection_hander = handler_.getNewInstance();
 
 		new_connection_.reset(new connection(
 			io_context_pool_.get_io_context(), 
@@ -115,8 +114,6 @@ namespace servercore {
 	{
 		if (!e)
 		{
-			//std::lock_guard<std::mutex> mu(cout_mu);
-			std::cout << "客户端连接" << std::endl;
 			new_connection_->start();
 		}
 

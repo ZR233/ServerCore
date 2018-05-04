@@ -90,7 +90,7 @@ namespace servercore {
 	public:
 		/// Construct a connection with the given io_context.
 		explicit connection(boost::asio::io_context& io_context,
-			boost::shared_ptr<IServerHandler> handler,
+			std::shared_ptr<IServerHandler> handler,
 			connection_service& conn_service,
 			CTaskList& task_list);
 		~connection()
@@ -144,7 +144,7 @@ namespace servercore {
 
 		std::vector<uint8_t> buf_head_;
 		std::vector<uint8_t> buf_body_;
-		boost::shared_ptr<IServerHandler> handler_;
+		std::shared_ptr<IServerHandler> handler_;
 		connection_service& conn_service_;
 		CTaskList& task_list_;
 		std::mutex send_mu_;

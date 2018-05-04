@@ -8,10 +8,10 @@ namespace servercore {
 	IHandlers::~IHandlers()
 	{
 	}
-	boost::shared_ptr<IHandlers> IHandlers::newHandler()
-	{
-		boost::shared_ptr<IHandlers> hand(new IHandlers());
-		BOOST_LOG_SEV(wlg::get(), warning) << L"未重写IHandlers子类的newHandler方法";
-		return hand;
-	}
+	//std::shared_ptr<IHandlerBase> IHandlers::getNewInstance()
+	//{
+	//	std::shared_ptr<IHandlerBase> hand(new IHandlers());
+	//	BOOST_LOG_SEV(wlg::get(), warning) << L"未重写IHandlers子类的getNewInstance方法";
+	//	return hand;
+	//}
 }

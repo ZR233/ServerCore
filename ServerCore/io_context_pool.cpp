@@ -10,47 +10,52 @@
 
 namespace servercore {
 
-io_context_pool::io_context_pool(std::size_t pool_size, IHandlers &handlers)
-  : next_io_context_(0),
-	handlers_(handlers)
+io_context_pool::io_context_pool(std::size_t pool_size): 
+	next_io_context_(0),
+	pool_size_(pool_size)
 {
 	if (pool_size == 0)
 		throw std::runtime_error("io_context_pool size is 0");
 	for (std::size_t i = 0; i < pool_size; ++i)
 	{
-		io_thread_ptr io_context(new CIoThread(handlers_.newHandler()));
-		io_threads_.push_back(io_context);
-		work_.push_back(boost::asio::make_work_guard(*(io_context->getIo())));
+		io_context_ptr io_context(new boost::asio::io_context());
+		work_.push_back(boost::asio::make_work_guard(*io_context));
+		io_contexts_.push_back(io_context);
 	}
 }
 
 void io_context_pool::run()
 {
-	for(auto var: io_threads_)
-		var->run();
+	for (std::size_t i = 0; i < pool_size_; ++i)
+	{
+		thread_ptr thread(new boost::thread([this,i]() {
+			io_contexts_[i]->run();
+		}));
+		threads_.push_back(thread);
+	}
 }
 
 void io_context_pool::stop()
 {
-	for (auto thread: io_threads_)
+	for (auto io_context: io_contexts_)
 	{
-		thread->stop();
+		io_context->stop();
 	}
 }
 
 void io_context_pool::join()
 {
-	for (auto var : io_threads_)
+	for (auto var : threads_)
 		var->join();
 }
 
 boost::asio::io_context& io_context_pool::get_io_context()
 {
-  auto& io_thread = *io_threads_[next_io_context_];
+  auto io_ = io_contexts_[next_io_context_];
   ++next_io_context_;
-  if (next_io_context_ == io_threads_.size())
+  if (next_io_context_ == io_contexts_.size())
     next_io_context_ = 0;
-  return *(io_thread.getIo());
+  return *io_;
 }
 
 } // namespace servercore

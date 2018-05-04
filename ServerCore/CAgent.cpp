@@ -83,13 +83,18 @@ namespace servercore {
 							return;
 						//读数据头得到数据总长度
 						head_buf.assign(4, 0);
-						socket_.async_read_some(boost::asio::buffer(head_buf), yield);
+						boost::system::error_code ec;
+						socket_.async_read_some(boost::asio::buffer(head_buf), yield[ec]);
+						if (ec)
+							return;
 						uint32_t len;
 						memcpy_s(&len, 4, &(head_buf[0]), 4);
 						len = ntohl(len);
 						data_buf.assign(len, 0);
 						//接收数据体
-						socket_.async_read_some(boost::asio::buffer(data_buf), yield);
+						socket_.async_read_some(boost::asio::buffer(data_buf), yield[ec]);
+						if (ec)
+							return;
 						data_buf.insert(data_buf.begin(), head_buf.begin(), head_buf.end());
 						agent_handlers_ptr_->dealRecvData(data_buf);
 					}

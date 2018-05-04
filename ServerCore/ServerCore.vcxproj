@@ -166,17 +166,18 @@
     <ClInclude Include="CAgent.h" />
     <ClInclude Include="CAgentPool.h" />
     <ClInclude Include="CBytesList.h" />
-    <ClInclude Include="CIoThread.h" />
     <ClInclude Include="CLog.h" />
     <ClInclude Include="connection.h" />
     <ClInclude Include="CPlatform.h" />
     <ClInclude Include="CTaskList.h" />
     <ClInclude Include="IAgentHandlers.h" />
+    <ClInclude Include="IHandlerBase.hpp" />
     <ClInclude Include="IModules.h" />
     <ClInclude Include="IServerHandler.h" />
     <ClInclude Include="externvar.hpp" />
     <ClInclude Include="IHandlers.h" />
     <ClInclude Include="io_context_pool.hpp" />
+    <ClInclude Include="CTaskDealer.h" />
     <ClInclude Include="ITaskHandler.h" />
     <ClInclude Include="CServer.h" />
     <ClInclude Include="stdafx.h" />
@@ -186,7 +187,6 @@
     <ClCompile Include="CAgent.cpp" />
     <ClCompile Include="CAgentPool.cpp" />
     <ClCompile Include="CBytesList.cpp" />
-    <ClCompile Include="CIoThread.cpp" />
     <ClCompile Include="CLog.cpp" />
     <ClCompile Include="connection.cpp" />
     <ClCompile Include="CPlatform.cpp" />
@@ -197,6 +197,7 @@
     <ClCompile Include="IServerHandler.cpp" />
     <ClCompile Include="IHandlers.cpp" />
     <ClCompile Include="io_context_pool.cpp" />
+    <ClCompile Include="CTaskDealer.cpp" />
     <ClCompile Include="ITaskHandler.cpp" />
     <ClCompile Include="CServer.cpp" />
     <ClCompile Include="stdafx.cpp">

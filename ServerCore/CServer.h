@@ -39,9 +39,9 @@ namespace servercore {
 		explicit CServer(
 			std::string address, 
 			std::string port,
-			int thread_pool_size,
+			io_context_pool& io_context_pool,
 			CTaskList& task_list,
-			IHandlers& handler);
+			IServerHandler& handler);
 
 		// Run the server's io_context loop.
 		void run();
@@ -62,13 +62,10 @@ namespace servercore {
 		// Handle a request to stop the server.
 		void handle_stop();
 
-		IHandlers& handler_;
-
-		// The number of threads that will call io_context::run().
-		std::size_t thread_pool_size_;
+		IServerHandler& handler_;
 
 		// The pool of io_context objects used to perform asynchronous operations.
-		io_context_pool io_context_pool_;
+		io_context_pool& io_context_pool_;
 
 		// The io_context used to perform asynchronous operations.
 		boost::asio::io_context io_context_;

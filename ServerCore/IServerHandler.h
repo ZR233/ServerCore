@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include "CTaskList.h"
+#include "IHandlerBase.hpp"
 
 namespace servercore
 {
@@ -18,8 +19,8 @@ namespace servercore
 		virtual void readHeadHandler(std::vector<uint8_t> buf);
 		//消息体处理
 		virtual void readBodyHandler(std::vector<uint8_t> buf);
-		////服务器任务处理
-		//virtual void serverTaskHandler(std::tuple<std::vector<std::string>, int> task) = 0;
+		
+		virtual std::shared_ptr<IServerHandler> getNewInstance();
 
 
 		//
