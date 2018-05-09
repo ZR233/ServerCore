@@ -3,10 +3,14 @@
 
 
 namespace servercore {
-	CTaskDealer::CTaskDealer(CTaskList & task_list, ITaskHandler & task_handler) :
-		task_list_(task_list),
+	CTaskDealer::CTaskDealer(ITaskHandler & task_handler) :
 		task_handler_ptr_(task_handler.getNewInstance())
 	{
+	}
+
+	void CTaskDealer::addTask(CTask task)
+	{
+		task_list_.addTask(task);
 	}
 
 	void CTaskDealer::run()
@@ -23,9 +27,9 @@ namespace servercore {
 	{
 		deal_thread_.join();
 	}
-	void CTaskDealer::registerAgents(IAgentModule& agents)
+	void CTaskDealer::registerAgents(IAgentModule* agents)
 	{
-		task_handler_ptr_->registerAgents(agents);
+		task_handler_ptr_->registerAgents(*agents);
 	}
 	void CTaskDealer::registerServer(IServerModule& server)
 	{

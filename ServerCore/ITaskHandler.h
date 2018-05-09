@@ -9,7 +9,7 @@
 namespace servercore {
 	class ITaskHandler
 	{
-	private:
+	protected:
 		IAgentModule* agents_= nullptr;
 		IServerModule* server_ = nullptr;
 	public:

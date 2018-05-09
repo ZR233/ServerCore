@@ -8,15 +8,15 @@ namespace servercore {
 		public ITaskDealerModule
 	{
 	private:
-		CTaskList & task_list_;
+		CTaskList task_list_;
 		std::shared_ptr<ITaskHandler> task_handler_ptr_;
 		boost::thread deal_thread_;
 	public:
-		CTaskDealer(CTaskList& task_list, ITaskHandler& task_handler);
-		
+		CTaskDealer(ITaskHandler& task_handler);
+		void addTask(CTask task)override;
 		void run()override;
 		void join()override;
-		void registerAgents(IAgentModule& agents)override;
+		void registerAgents(IAgentModule* agents)override;
 		void registerServer(IServerModule& server)override;
 
 		~CTaskDealer();

@@ -12,7 +12,7 @@
 #include <vector>
 #include <boost/bind.hpp>
 #include "CTaskList.h"
-
+#include "CPlatform.h"
 
 namespace servercore {
 
@@ -73,23 +73,34 @@ namespace servercore {
 		boost::asio::io_context& io_context,
 		std::shared_ptr<IServerHandler> handler,
 		connection_service& conn_service,
-		CTaskList& task_list
+		CPlatform& plat
 	):
 		strand_(io_context),
 		socket_(io_context),
 		handler_(handler),
 		conn_service_(conn_service),
 		io_context_(io_context),
-		task_list_(task_list),
+		plat_(plat),
 		stop_flag_(false)
 	{
 		handler_->registConnection(*this);
-		handler_->registServerTasks(task_list);
 	}
 
 	boost::asio::ip::tcp::socket& connection::socket()
 	{
 		return socket_;
+	}
+
+	void connection::addTask(const char * task_dealer_name, CTask task)
+	{
+		try
+		{
+			plat_.useTaskDealer(task_dealer_name)->addTask(task);
+		}
+		catch (const zrutils::exception& e)
+		{
+			BOOST_THROW_EXCEPTION(e);
+		}
 	}
 
 	void connection::start()
@@ -172,9 +183,5 @@ namespace servercore {
 		handler_->kickClientHandler();
 		stop_flag_ = true;
 		socket_.close();
-	}
-	void connection::addServerTask(CTask task)
-	{
-		task_list_.addTask(task);
 	}
 } // namespace servercore

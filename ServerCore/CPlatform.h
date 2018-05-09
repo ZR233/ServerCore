@@ -13,29 +13,26 @@ namespace servercore {
 	public:
 		CPlatform();
 		~CPlatform();
-		std::shared_ptr<IAgentModule> registerAgent(const char name[]);
+		IAgentModule* registerAgent(const char name[]);
 		std::shared_ptr<IServerModule> registerServer(
 			const char name[],
 			const char address[],
 			const char port[],
-			std::shared_ptr<CTaskList> task_list,
 			IServerHandler& handler
 			);
-		std::shared_ptr<CTaskList> registerTaskList(const char* name);
 		std::shared_ptr<ITaskDealerModule> registerDealer(
 			const char* name,
-			ITaskHandler& task_handlers,
-			std::shared_ptr<CTaskList> task_list
+			ITaskHandler& task_handlers
 		);
+
+		ITaskDealerModule* useTaskDealer(const char* name);
 
 		void run();
 		void join();
 	private:
 		std::map<std::string,std::shared_ptr<IAgentModule>> agent_set_;
 		std::map<std::string, std::shared_ptr<IServerModule>> server_set_;
-		std::map<std::string, std::shared_ptr<CTaskList>> tasklist_set_;
 		std::map<std::string, std::shared_ptr<ITaskDealerModule>> task_dealer_set_;
-
 
 		int thread_num_;
 

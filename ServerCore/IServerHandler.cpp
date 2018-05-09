@@ -55,8 +55,4 @@ namespace servercore {
 		BOOST_LOG_SEV(wlg::get(), warning) << L"未重写IServerHandler子类的getNewInstance方法";
 		return hand;
 	}
-	void IServerHandler::addServerTask(CTask task) 
-	{
-		server_tasks_->addTask(task);
-	}
 }

@@ -48,10 +48,6 @@ namespace servercore
 		{
 			connection_ = &conn;
 		}
-		void registServerTasks(CTaskList& server_ta)
-		{
-			server_tasks_ = &server_ta;
-		}
 		//设置消息长度数据段的长度
 		void setHeadLen(int len)
 		{
@@ -72,7 +68,6 @@ namespace servercore
 		std::vector<uint8_t> buf_body_;
 		std::map<std::string, std::string> attribute_;
 		connection* connection_ = nullptr;
-		CTaskList* server_tasks_ = nullptr;
 		int head_len_;
 	};
 }

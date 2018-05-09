@@ -1,19 +1,18 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CAgentPool.h"
 #include <boost\date_time.hpp>
 namespace servercore {
-	CAgentPool::CAgentPool(io_context_pool& io_pool):
-		io_pool_(io_pool)
+	CAgentPool::CAgentPool(io_context_pool& io_pool, CPlatform& plat):
+		io_pool_(io_pool),
+		plat_(plat)
 	{
 	}
-
-
 	CAgentPool::~CAgentPool()
 	{
 	}
-	std::shared_ptr<CAgent> CAgentPool::createAgent(
-			IAgentHandlers& agent_handlers,
-			std::shared_ptr<CTaskList> task_list
+	CAgent* CAgentPool::createAgent(
+			const char* name,
+			IAgentHandlers& agent_handlers
 		)
 	{
 		auto pt = boost::posix_time::second_clock::local_time();
@@ -32,8 +31,24 @@ namespace servercore {
 			this,
 			agent_handlers,
 			io_pool_.get_io_context(),
-			*task_list));
-		agent_map_[id] = agent;
-		return agent;
+			plat_));
+		agent_map_[name] = agent;
+		return &(*agent);
+	}
+
+	CAgent* CAgentPool::useAgent(const char* name)
+	{
+		auto agent_ptr_iter = agent_map_.find(name);
+		if (agent_ptr_iter != agent_map_.end())
+		{
+			return &(*((*agent_ptr_iter).second));
+		}
+		else
+		{
+			std::string err_str = "没有名为[";
+			err_str += name;
+			err_str += "]的Agent";
+			BOOST_THROW_EXCEPTION(zrutils::exception(err_str));
+		}
 	}
 }

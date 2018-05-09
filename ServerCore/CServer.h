@@ -27,7 +27,7 @@
 
 
 namespace servercore {
-
+	class CPlatform;
 	// The top-level class of the server.
 	class CServer:
 		private boost::noncopyable,
@@ -40,7 +40,7 @@ namespace servercore {
 			std::string address, 
 			std::string port,
 			io_context_pool& io_context_pool,
-			CTaskList& task_list,
+			CPlatform& plat,
 			IServerHandler& handler);
 
 		// Run the server's io_context loop.
@@ -81,7 +81,7 @@ namespace servercore {
 
 		connection_service connection_service_;
 
-		CTaskList& server_tasks_;
+		CPlatform& plat_;
 
 	};//class server
 

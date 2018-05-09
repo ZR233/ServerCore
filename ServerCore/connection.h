@@ -55,7 +55,7 @@ namespace servercore {
 	//	boost::mutex task_mu_;
 	//	std::deque<std::tuple<std::vector<std::string>, int>> tasks_;
 	//};
-
+	class CPlatform;
 	class connection_service
 	{
 	public:
@@ -92,7 +92,7 @@ namespace servercore {
 		explicit connection(boost::asio::io_context& io_context,
 			std::shared_ptr<IServerHandler> handler,
 			connection_service& conn_service,
-			CTaskList& task_list);
+			CPlatform& plat);
 		~connection()
 		{
 			WLOG wlg;
@@ -111,6 +111,8 @@ namespace servercore {
 		virtual void send(std::vector<uint8_t>& buf);
 		void start();
 		boost::asio::ip::tcp::socket& socket();
+
+		void addTask(const char* task_dealer_name, CTask task);
 	protected:
 		//停止标识
 		bool stop_flag_;
@@ -123,7 +125,6 @@ namespace servercore {
 		void readHead();
 		void readBody();
 		void doWrite();	
-		virtual void addServerTask(CTask task);
 		boost::asio::io_context::strand* getStrand()
 		{
 			return &strand_;
@@ -146,7 +147,7 @@ namespace servercore {
 		std::vector<uint8_t> buf_body_;
 		std::shared_ptr<IServerHandler> handler_;
 		connection_service& conn_service_;
-		CTaskList& task_list_;
+		CPlatform& plat_;
 		std::mutex send_mu_;
 		std::deque<std::vector<uint8_t>> send_que_;
 	};

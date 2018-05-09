@@ -4,7 +4,10 @@
 #include <string>
 
 namespace servercore {
-	IAgentHandlers::IAgentHandlers()
+	IAgentHandlers::IAgentHandlers():
+		active_test_time_millsec_(10 * 1000),
+		socket_close_deadline_millsec_(15 *1000),
+		no_data_close_socket_(false)
 	{
 	}
 

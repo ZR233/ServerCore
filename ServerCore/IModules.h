@@ -10,10 +10,11 @@ namespace servercore {
 	public:
 		IAgentModule();
 		virtual ~IAgentModule();
-		virtual std::shared_ptr<CAgent> createAgent(
-			IAgentHandlers& agent_handlers,
-			std::shared_ptr<CTaskList> task_list
+		virtual CAgent* createAgent(
+			const char* name,
+			IAgentHandlers& agent_handlers
 		) = 0;
+		virtual CAgent* useAgent(const char* name) = 0;
 	};
 
 	class IServerModule
@@ -29,7 +30,7 @@ namespace servercore {
 		virtual void kickByAttribute(std::string key, std::string value) = 0;
 	};
 
-	class CTaskDealer;
+	class CTask;
 	class ITaskHandler;
 	class ITaskDealerModule
 	{
@@ -38,7 +39,8 @@ namespace servercore {
 		virtual ~ITaskDealerModule() = default;
 		virtual void run()=0;
 		virtual void join() = 0;
-		virtual void registerAgents(IAgentModule& agents) = 0;
+		virtual void addTask(CTask task) = 0;
+		virtual void registerAgents(IAgentModule* agents) = 0;
 		virtual void registerServer(IServerModule& server) = 0;
 	};
 }

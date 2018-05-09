@@ -6,21 +6,24 @@
 
 
 namespace servercore {
+	class CPlatform;
 	class CAgentPool:
 		public IAgentModule
 	{
 	public:
-		CAgentPool(io_context_pool& io_pool);
+		CAgentPool(io_context_pool& io_pool, CPlatform& plat);
 		~CAgentPool();
-		std::shared_ptr<CAgent> createAgent(
-			IAgentHandlers& agent_handlers,
-			std::shared_ptr<CTaskList> task_list
+		CAgent* createAgent(
+			const char* name,
+			IAgentHandlers& agent_handlers
 			)override;
+		CAgent* useAgent(const char* name)override;
 		friend class CAgent;
 	private:
 		uint64_t client_count_;
-		//agent_id, agent_ptr
-		std::map<uint64_t, std::shared_ptr<CAgent>> agent_map_;
+		//agent_name, agent_ptr
+		std::map<std::string, std::shared_ptr<CAgent>> agent_map_;
 		io_context_pool& io_pool_;
+		CPlatform& plat_;
 	};
 }

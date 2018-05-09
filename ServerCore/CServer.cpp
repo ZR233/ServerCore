@@ -4,21 +4,21 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
-
+#include "CPlatform.h"
 
 namespace servercore {
 	CServer::CServer(
 		std::string address,
 		std::string port,
 		io_context_pool& io_context_pool,
-		CTaskList& task_list,
+		CPlatform& plat,
 		IServerHandler& handler
 	) :
 		io_context_pool_(io_context_pool),
 		signals_(io_context_pool_.get_io_context()),
 		acceptor_(io_context_pool_.get_io_context()),
 		new_connection_(),
-		server_tasks_(task_list),
+		plat_(plat),
 		handler_(handler)
 	{
 		// Register to handle the signals that indicate when the server should exit.
@@ -104,7 +104,7 @@ namespace servercore {
 
 		new_connection_.reset(new connection(
 			io_context_pool_.get_io_context(), 
-			connection_hander, connection_service_, server_tasks_));
+			connection_hander, connection_service_, plat_));
 		acceptor_.async_accept(new_connection_->socket(),
 			boost::bind(&CServer::handle_accept, this,
 				boost::asio::placeholders::error));
