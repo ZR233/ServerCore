@@ -95,10 +95,10 @@ namespace servercore {
 			CPlatform& plat);
 		~connection()
 		{
-			WLOG wlg;
-			BOOST_LOG_SEV(wlg, debug) << L"客户端析构";
+			//WLOG wlg;
+			//BOOST_LOG_SEV(wlg, debug) << L"客户端析构";
 			//LOG lg;
-			//BOOST_LOG_SEV(lg, debug) << "客户端析构";
+			BOOST_LOG_SEV(lg::get(), debug) << "客户端析构";
 			//BOOST_LOG_SEV(wlg::get(), warning) << L"客户端析构";
 			//BOOST_LOG_SEV(wlg::get(), debug) << L"客户端析构";
 		}

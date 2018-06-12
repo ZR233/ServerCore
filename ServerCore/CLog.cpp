@@ -31,41 +31,50 @@ namespace servercore
 
 	void logIni()
 	{
-		// For now we only create a text output sink:
-		typedef sinks::asynchronous_sink< sinks::text_ostream_backend > text_sink;
-		shared_ptr< text_sink > pSink(new text_sink());
-
-
-		//pSink->imbue(std::locale("en_US.UTF-8"));
-		{
-			// The good thing about sink frontends is that they are provided out-of-box and
-			// take away thread-safety burden from the sink backend implementors. Even if you
-			// have to call a custom backend method, the frontend gives you a convenient way
-			// to do it in a thread safe manner. All you need is to acquire a locking pointer
-			// to the backend.
-			text_sink::locked_backend_ptr pBackend = pSink->locked_backend();
-
-			// Now, as long as pBackend lives, you may work with the backend without
-			// interference of other threads that might be trying to log.
-
-			// Next we add streams to which logging records should be output
-			shared_ptr< std::ostream > pStream(&std::clog, boost::null_deleter());
-			pBackend->add_stream(pStream);
-		}
-
-		pSink->set_formatter(expr::stream
+		logging::add_console_log(std::clog,
+			keywords::filter = expr::attr< severity_level >("Severity") >= externvar::log_filter_lv,
+			keywords::format = expr::stream
 			<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
-			<< "[" << expr::attr< severity_level >("Severity") << "]"
-			<< expr::message);
-		pSink->set_filter(expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);
-		/*logging::add_console_log(std::clog,
-		keywords::format = expr::stream
-		<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
-		<< "[" << expr::attr< severity_level >("Severity") << "]"
-		<< expr::message,
-		keywords::filter = expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);*/
+			/*<< " [" << expr::format_date_time< attrs::timer::value_type >("Uptime", "%O:%M:%S")
+			<< "] [" << expr::format_named_scope("Scope", keywords::format = "%n (%f:%l)")
+			<< "] */
+			<< "[" << expr::attr< severity_level >("Severity")
+			<< "]" << expr::message);
+		//// For now we only create a text output sink:
+		//typedef sinks::asynchronous_sink< sinks::text_ostream_backend > text_sink;
+		//shared_ptr< text_sink > pSink(new text_sink());
+		//
+		//
+		//pSink->imbue(std::locale(".936"));
+		//{
+		//	// The good thing about sink frontends is that they are provided out-of-box and
+		//	// take away thread-safety burden from the sink backend implementors. Even if you
+		//	// have to call a custom backend method, the frontend gives you a convenient way
+		//	// to do it in a thread safe manner. All you need is to acquire a locking pointer
+		//	// to the backend.
+		//	text_sink::locked_backend_ptr pBackend = pSink->locked_backend();
 
-		logging::core::get()->add_sink(pSink);
+		//	// Now, as long as pBackend lives, you may work with the backend without
+		//	// interference of other threads that might be trying to log.
+
+		//	// Next we add streams to which logging records should be output
+		//	shared_ptr< std::ostream > pStream(&std::cout, boost::null_deleter());
+		//	pBackend->add_stream(pStream);
+		//}
+
+		//pSink->set_formatter(expr::stream
+		//	<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
+		//	<< "[" << expr::attr< severity_level >("Severity") << "]"
+		//	<< expr::message);
+		//pSink->set_filter(expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);
+		///*logging::add_console_log(std::clog,
+		//keywords::format = expr::stream
+		//<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "[%H:%M:%S]")
+		//<< "[" << expr::attr< severity_level >("Severity") << "]"
+		//<< expr::message,
+		//keywords::filter = expr::attr< severity_level >("Severity") >= externvar::log_filter_lv);*/
+
+		//logging::core::get()->add_sink(pSink);
 		// One can also use lambda expressions to setup filters and formatters
 
 		if (externvar::log_save_lv == 0)

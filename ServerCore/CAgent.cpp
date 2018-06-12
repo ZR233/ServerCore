@@ -6,6 +6,7 @@
 #include "CAgentPool.h"
 #include <iostream>
 #include "CPlatform.h"
+#include <boost/locale.hpp>
 
 namespace servercore {
 	CAgent::CAgent(
@@ -53,7 +54,10 @@ namespace servercore {
 			if (ec)
 			{
 				socket_.close();
-				BOOST_LOG_SEV(lg::get(), debug) << "连接服务器失败\nIP:"<< ed.address()<<"PORT:"
+				BOOST_LOG_SEV(lg::get(), error) 
+					<< "服务器连接失败\nIP:"
+					<< ed.address().to_string()
+					<<"PORT:"
 					<<std::to_string(ed.port());
 				agent_handlers_ptr_->connectFail();
 				reconnect_timer_.expires_from_now(boost::posix_time::milliseconds(5000));
@@ -219,6 +223,7 @@ namespace servercore {
 
 	void CAgent::disconnect()
 	{
+		agent_handlers_ptr_->disconnectDeal();
 		socket_.close();
 		activate_timer_.expires_at(boost::posix_time::pos_infin);
 		close_deadline_timer_.expires_at(boost::posix_time::pos_infin);

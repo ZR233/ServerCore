@@ -17,6 +17,7 @@ namespace servercore {
 		virtual std::shared_ptr<IAgentHandlers> getNewInstance();
 		virtual void dealRecvData(std::vector<uint8_t> data_buf);
 		virtual void connectFail();
+		virtual void disconnectDeal() {};
 		virtual std::vector<uint8_t> activeTest() { return std::vector<uint8_t>(); };
 		virtual std::vector<uint8_t> loginDeal() { return std::vector<uint8_t>(); };
 

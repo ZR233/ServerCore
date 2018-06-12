@@ -10,7 +10,6 @@ namespace servercore
 	{
 	public:
 		externvar() {
-			std::locale::global(std::locale(""));
 			logIni();
 		}
 		~externvar() {}
